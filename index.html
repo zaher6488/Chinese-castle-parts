@@ -1,11 +1,10 @@
-<!DOCTYPE html>
+            <!DOCTYPE html>   
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>القلعة الصينية للإسبيرات</title>
+    <title>القلعة الصينية للإسبيرات - قطع غيار الشاحنات</title>
     <style>
-        /* نفس الأنماط السابقة - محفوظة للاختصار */
         :root {
             --primary-color: #1a5276;
             --secondary-color: #e74c3c;
@@ -20,7 +19,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
@@ -32,7 +31,7 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 20px;
         }
@@ -74,6 +73,58 @@
         
         .contact-header div {
             margin-bottom: 5px;
+        }
+        
+        /* Admin Panel */
+        .admin-panel {
+            position: fixed;
+            top: 100px;
+            left: 20px;
+            width: 350px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            z-index: 99;
+            padding: 20px;
+            transition: transform 0.3s ease;
+            transform: translateX(-400px);
+        }
+        
+        .admin-panel.open {
+            transform: translateX(0);
+        }
+        
+        .admin-toggle {
+            position: fixed;
+            top: 120px;
+            left: 20px;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+            transition: all 0.3s;
+        }
+        
+        .admin-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        .admin-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid var(--light-color);
+            padding-bottom: 10px;
         }
         
         /* Tabs */
@@ -160,7 +211,6 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            width: 100%;
             box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
         }
         
@@ -185,6 +235,25 @@
         
         .btn-success:hover {
             box-shadow: 0 6px 16px rgba(39, 174, 96, 0.4);
+        }
+        
+        .btn-edit {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-edit:hover {
+            box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn-full {
+            width: 100%;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
         }
         
         /* Parts Grid */
@@ -276,6 +345,25 @@
         
         .delete-btn:hover {
             background: #c0392b;
+            transform: scale(1.1);
+        }
+        
+        .edit-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            position: absolute;
+            top: 10px;
+            left: 50px;
+            transition: all 0.3s;
+        }
+        
+        .edit-btn:hover {
+            background: #2980b9;
             transform: scale(1.1);
         }
         
@@ -503,6 +591,34 @@
         }
         
         /* Responsive */
+        @media (max-width: 1200px) {
+            .admin-panel {
+                width: 300px;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .admin-panel {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 1000;
+                transform: translateX(-100%);
+                border-radius: 0;
+            }
+            
+            .admin-panel.open {
+                transform: translateX(0);
+            }
+            
+            .admin-toggle {
+                top: 20px;
+                left: 20px;
+            }
+        }
+        
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
@@ -544,17 +660,6 @@
         .fade-in {
             animation: fadeIn 0.5s ease forwards;
         }
-        
-        /* Debug Info */
-        .debug-info {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 1rem 0;
-            font-size: 0.9rem;
-            color: #856404;
-        }
     </style>
 </head>
 <body>
@@ -572,17 +677,105 @@
         </div>
     </header>
 
-    <div class="container">
-        <!-- Debug Information -->
-        <div class="debug-info" id="debug-info" style="display: none;">
-            <!-- معلومات التصحيح تظهر هنا -->
+    <!-- Admin Panel -->
+    <button class="admin-toggle" id="admin-toggle">⚙️</button>
+    <div class="admin-panel" id="admin-panel">
+        <h2 class="admin-title">🔧 لوحة التحكم</h2>
+        
+        <div class="password-section" id="password-section">
+            <h3>🔒 الوصول إلى لوحة التحكم</h3>
+            <input type="password" id="password-input" class="password-input" placeholder="أدخل الرمز السري للوصول">
+            <button class="btn btn-full" id="password-btn">فتح لوحة التحكم</button>
         </div>
+        
+        <div id="admin-content" style="display: none;">
+            <div class="form-group">
+                <label for="part-name">اسم القطعة</label>
+                <input type="text" id="part-name" placeholder="مثال: فلتر زيت محرك">
+            </div>
+            <div class="form-group">
+                <label for="part-number">رقم القطعة</label>
+                <input type="text" id="part-number" placeholder="مثال: HW-78234">
+            </div>
+            <div class="form-group">
+                <label for="part-brand">العلامة التجارية</label>
+                <select id="part-brand">
+                    <option value="howo-371">HOWO 371</option>
+                    <option value="howo-420">HOWO 420</option>
+                    <option value="howo-336">HOWO 336</option>
+                    <option value="howo-380">HOWO 380</option>
+                    <option value="howo-340">HOWO 340</option>
+                    <option value="howo-310">HOWO 310</option>
+                    <option value="weichai-wp10">Weichai WP10</option>
+                    <option value="weichai-wp12">Weichai WP12</option>
+                    <option value="weichai-wp13">Weichai WP13</option>
+                    <option value="yuchai-yc6a">Yuchai YC6A</option>
+                    <option value="yuchai-yc6l">Yuchai YC6L</option>
+                    <option value="yuchai-yc6m">Yuchai YC6M</option>
+                    <option value="cac-deutz-1013">CAC DEUTZ 1013</option>
+                    <option value="cac-deutz-2012">CAC DEUTZ 2012</option>
+                    <option value="cac-deutz-2013">CAC DEUTZ 2013</option>
+                    <option value="faw-deutz-fd68">FAW DEUTZ FD68</option>
+                    <option value="faw-deutz-fd78">FAW DEUTZ FD78</option>
+                    <option value="isuzu-4hk1">ISUZU 4HK1</option>
+                    <option value="isuzu-6hk1">ISUZU 6HK1</option>
+                    <option value="isuzu-6wg1">ISUZU 6WG1</option>
+                    <option value="shacman-wp10">Shacman WP10</option>
+                    <option value="shacman-wp12">Shacman WP12</option>
+                    <option value="foton-isf3.8">Foton ISF3.8</option>
+                    <option value="foton-isf4.5">Foton ISF4.5</option>
+                    <option value="dongfeng-dci11">Dongfeng dCi11</option>
+                    <option value="dongfeng-4h">Dongfeng 4H</option>
+                    <option value="cat">CAT (لودر)</option>
+                    <option value="str">STR (مكنة الشاحنة الاستاير)</option>
+                    <option value="deutz">Deutz</option>
+                    <option value="sinotruk">SINOTRUK</option>
+                    <option value="foton">FOTON</option>
+                    <option value="other">أخرى</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="part-price">السعر (جنيه سوداني)</label>
+                <input type="number" id="part-price" placeholder="مثال: 12000">
+            </div>
+            
+            <div class="form-group">
+                <label>صورة القطعة</label>
+                <div class="image-upload" id="image-upload">
+                    <div class="image-upload-icon">📷</div>
+                    <p>انقر لرفع صورة القطعة</p>
+                </div>
+                <input type="file" id="part-image-file" accept="image/*" style="display: none;">
+                <div id="image-preview-container" class="image-preview" style="display: none;">
+                    <!-- معاينة الصورة تظهر هنا -->
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="part-description">وصف القطعة (اختياري)</label>
+                <textarea id="part-description" rows="3" placeholder="معلومات إضافية عن القطعة"></textarea>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-success" id="add-part-btn">إضافة القطعة</button>
+                <button class="btn btn-edit" id="update-part-btn" style="display: none;">تحديث القطعة</button>
+                <button class="btn btn-secondary" id="cancel-edit-btn" style="display: none;">إلغاء التعديل</button>
+            </div>
+            
+            <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+                <h3 style="font-size: 1.1rem; margin-bottom: 10px;">إحصائيات</h3>
+                <p>عدد القطع: <span id="parts-count">0</span></p>
+                <p>عدد القطع في السلة: <span id="cart-count-admin">0</span></p>
+            </div>
+        </div>
+    </div>
 
+    <div class="container">
         <!-- Tabs -->
         <div class="tabs">
             <div class="tab active" data-tab="search">البحث عن قطعة</div>
             <div class="tab" data-tab="view">عرض جميع القطع</div>
-            <div class="tab" data-tab="add">إضافة قطعة غيار</div>
+            <div class="tab" data-tab="categories">التصنيفات</div>
         </div>
 
         <!-- Messages -->
@@ -616,61 +809,57 @@
             </div>
         </div>
 
-        <!-- Add Part Form (Hidden by default) -->
-        <div id="add-form" class="form-container" style="display: none;">
-            <div class="password-section">
-                <h3>🔒 الوصول إلى إضافة القطع</h3>
-                <input type="password" id="password-input" class="password-input" placeholder="أدخل الرمز السري للوصول">
-                <button class="btn" id="password-btn">فتح قسم الإضافة</button>
-            </div>
-            
-            <div id="add-form-content" style="display: none;">
-                <h2 class="form-title">➕ إضافة قطعة غيار جديدة</h2>
-                <div class="form-group">
-                    <label for="part-name">اسم القطعة</label>
-                    <input type="text" id="part-name" placeholder="مثال: فلتر زيت محرك">
-                </div>
-                <div class="form-group">
-                    <label for="part-number">رقم القطعة</label>
-                    <input type="text" id="part-number" placeholder="مثال: HW-78234">
-                </div>
-                <div class="form-group">
-                    <label for="part-brand">العلامة التجارية</label>
-                    <select id="part-brand">
-                        <option value="howo-371">HOWO 371</option>
-                        <option value="howo-420">HOWO 420</option>
-                        <option value="cat">CAT (لودر)</option>
-                        <option value="str">STR (مكنة الشاحنة الاستاير)</option>
-                        <option value="deutz">Deutz</option>
-                        <option value="sinotruk">SINOTRUK</option>
-                        <option value="foton">FOTON</option>
-                        <option value="other">أخرى</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="part-price">السعر (جنيه سوداني)</label>
-                    <input type="number" id="part-price" placeholder="مثال: 12000">
-                </div>
-                
-                <div class="form-group">
-                    <label>صورة القطعة</label>
-                    <div class="image-upload" id="image-upload">
-                        <div class="image-upload-icon">📷</div>
-                        <p>انقر لرفع صورة القطعة</p>
-                        <p style="font-size: 0.9rem; color: #6c757d; margin-top: 0.5rem;">يمكنك التقاط صورة أو اختيارها من المعرض</p>
+        <!-- Categories -->
+        <div id="categories" class="form-container" style="display: none;">
+            <h2 class="form-title">📂 التصنيفات</h2>
+            <div class="parts-grid">
+                <div class="part-card">
+                    <div class="part-image" style="background: linear-gradient(135deg, #3498db, #2980b9);">
+                        <span style="color: white; font-size: 2rem;">🚛</span>
                     </div>
-                    <input type="file" id="part-image-file" accept="image/*" style="display: none;">
-                    <div id="image-preview-container" class="image-preview" style="display: none;">
-                        <!-- معاينة الصورة تظهر هنا -->
+                    <div class="part-info">
+                        <div class="part-name">قطع غيار HOWO</div>
+                        <div class="part-brand">HOWO 371, 420, 336, 380, 340, 310</div>
+                        <p style="color: #666; margin-top: 0.8rem;">جميع قطع غيار شاحنات HOWO بمختلف موديلاتها</p>
+                        <button class="buy-btn" onclick="filterByBrand('howo')">عرض القطع</button>
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="part-description">وصف القطعة (اختياري)</label>
-                    <textarea id="part-description" rows="3" placeholder="معلومات إضافية عن القطعة"></textarea>
+                <div class="part-card">
+                    <div class="part-image" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">
+                        <span style="color: white; font-size: 2rem;">🔧</span>
+                    </div>
+                    <div class="part-info">
+                        <div class="part-name">قطع غيار Weichai</div>
+                        <div class="part-brand">WP10, WP12, WP13</div>
+                        <p style="color: #666; margin-top: 0.8rem;">قطع غيار محركات Weichai بمختلف أنواعها</p>
+                        <button class="buy-btn" onclick="filterByBrand('weichai')">عرض القطع</button>
+                    </div>
                 </div>
                 
-                <button class="btn" id="add-part-btn">إضافة القطعة</button>
+                <div class="part-card">
+                    <div class="part-image" style="background: linear-gradient(135deg, #f39c12, #e67e22);">
+                        <span style="color: white; font-size: 2rem;">🚜</span>
+                    </div>
+                    <div class="part-info">
+                        <div class="part-name">قطع غيار CAT</div>
+                        <div class="part-brand">لودر ومعدات ثقيلة</div>
+                        <p style="color: #666; margin-top: 0.8rem;">قطع غيار لوادر ومعدات CAT الثقيلة</p>
+                        <button class="buy-btn" onclick="filterByBrand('cat')">عرض القطع</button>
+                    </div>
+                </div>
+                
+                <div class="part-card">
+                    <div class="part-image" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
+                        <span style="color: white; font-size: 2rem;">🚚</span>
+                    </div>
+                    <div class="part-info">
+                        <div class="part-name">قطع غيار أخرى</div>
+                        <div class="part-brand">ISUZU, FOTON, SHACMAN, YUCHAI</div>
+                        <p style="color: #666; margin-top: 0.8rem;">قطع غيار للعلامات التجارية الأخرى</p>
+                        <button class="buy-btn" onclick="filterByBrand('other')">عرض القطع</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -695,8 +884,9 @@
                 </div>
                 <div class="footer-section">
                     <h3>العلامات التجارية</h3>
-                    <p>HOWO 371 • HOWO 420 • CAT</p>
-                    <p>STR • Deutz • SINOTRUK • FOTON</p>
+                    <p>HOWO • Weichai • Yuchai • CAC DEUTZ</p>
+                    <p>FAW DEUTZ • ISUZU • SHACMAN • FOTON</p>
+                    <p>DONGFENG • CAT • SINOTRUK</p>
                 </div>
             </div>
             <div class="copyright">
@@ -706,15 +896,66 @@
     </footer>
 
     <script>
-        // إصلاح مشكلة التخزين - مفتاح فريد للموقع
-        const STORAGE_KEY = 'castle-parts-v2';
-        const CART_STORAGE_KEY = 'castle-cart-v2';
-        
         // بيانات أولية لقطع الغيار
-        let parts = [];
-        
+        let parts = JSON.parse(localStorage.getItem('castle-parts')) || [
+            {
+                id: 1,
+                name: "فلتر زيت محرك",
+                number: "HW-78234",
+                brand: "howo-371",
+                price: "12000",
+                description: "فلتر زيت أصلي للشاحنات الثقيلة",
+                image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZjNzU3ZCI+SE9XTyAzNzE8L3RleHQ+PC9zdmc+"
+            },
+            {
+                id: 2,
+                name: "قرص مكابح أمامي",
+                number: "ST-45612",
+                brand: "str",
+                price: "34000",
+                description: "قرص مكابح أمامي عالي الجودة",
+                image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZjNzU3ZCI+U1RSPC90ZXh0Pjwvc3ZnPg=="
+            },
+            {
+                id: 3,
+                name: "مرشح هواء",
+                number: "FT-89123",
+                brand: "deutz",
+                price: "8500",
+                description: "مرشح هواء لمحركات الديزل",
+                image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZjNzU3ZCI+RGV1dHo8L3RleHQ+PC9zdmc+"
+            },
+            {
+                id: 4,
+                name: "حاقن وقود",
+                number: "WP12-INJ-001",
+                brand: "weichai-wp12",
+                price: "45000",
+                description: "حاقن وقود لمحركات Weichai WP12",
+                image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZjNzU3ZCI+V2VpY2hhaSBXUDEyPC90ZXh0Pjwvc3ZnPg=="
+            },
+            {
+                id: 5,
+                name: "طرمبة مياه",
+                number: "YC6A-WP-002",
+                brand: "yuchai-yc6a",
+                price: "28000",
+                description: "طرمبة مياه لمحركات Yuchai YC6A",
+                image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZjNzU3ZCI+WXVjaGFpIFlDNkE8L3RleHQ+PC9zdmc+"
+            },
+            {
+                id: 6,
+                name: "بستم محرك",
+                number: "ISZ-6HK1-PST",
+                brand: "isuzu-6hk1",
+                price: "32000",
+                description: "بستم محرك لشاحنات ISUZU 6HK1",
+                image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZjNzU3ZCI+SVNVRVogNkhLMQ==PC90ZXh0Pjwvc3ZnPg=="
+            }
+        ];
+
         // سلة المشتريات
-        let cart = [];
+        let cart = JSON.parse(localStorage.getItem('castle-cart')) || [];
         
         // الرمز السري
         const SECRET_PASSWORD = "787898";
@@ -722,91 +963,21 @@
         
         // رقم واتساب
         const WHATSAPP_NUMBER = "+249969688826";
-
-        // دالة محسنة لتحميل البيانات
-        function loadParts() {
-            try {
-                const savedData = localStorage.getItem(STORAGE_KEY);
-                console.log('بيانات التخزين المحفوظة:', savedData);
-                
-                if (savedData) {
-                    const parsedData = JSON.parse(savedData);
-                    parts = Array.isArray(parsedData) ? parsedData : [];
-                    console.log('البيانات المحملة:', parts);
-                } else {
-                    // بيانات أولية فقط إذا لم تكن هناك بيانات محفوظة
-                    parts = [
-                        {
-                            id: 1,
-                            name: "فلتر زيت محرك",
-                            number: "HW-78234",
-                            brand: "howo-371",
-                            price: "12000",
-                            description: "فلتر زيت أصلي للشاحنات الثقيلة",
-                            image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZjNzU3ZCI+SE9XTyAzNzE8L3RleHQ+PC9zdmc+"
-                        },
-                        {
-                            id: 2,
-                            name: "قرص مكابح أمامي",
-                            number: "ST-45612",
-                            brand: "str",
-                            price: "34000",
-                            description: "قرص مكابح أمامي عالي الجودة",
-                            image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZjNzU3ZCI+U1RSPC90ZXh0Pjwvc3ZnPg=="
-                        },
-                        {
-                            id: 3,
-                            name: "مرشح هواء",
-                            number: "FT-89123",
-                            brand: "deutz",
-                            price: "8500",
-                            description: "مرشح هواء لمحركات الديزل",
-                            image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZjNzU3ZCI+RGV1dHo8L3RleHQ+PC9zdmc+"
-                        }
-                    ];
-                    saveParts(); // حفظ البيانات الأولية
-                }
-                
-                updateDebugInfo(`تم تحميل ${parts.length} قطعة`);
-            } catch (error) {
-                console.error('خطأ في تحميل البيانات:', error);
-                parts = [];
-                updateDebugInfo('خطأ في تحميل البيانات، تم التهيئة من جديد');
-            }
-        }
-
-        // دالة محسنة لحفظ البيانات
-        function saveParts() {
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(parts));
-                console.log('تم حفظ البيانات:', parts);
-                updateDebugInfo(`تم حفظ ${parts.length} قطعة في التخزين`);
-            } catch (error) {
-                console.error('خطأ في حفظ البيانات:', error);
-                updateDebugInfo('خطأ في حفظ البيانات');
-            }
-        }
         
-        // تحميل سلة المشتريات
-        function loadCart() {
-            try {
-                const savedCart = localStorage.getItem(CART_STORAGE_KEY);
-                cart = savedCart ? JSON.parse(savedCart) : [];
-                updateCartUI();
-            } catch (error) {
-                console.error('خطأ في تحميل سلة المشتريات:', error);
-                cart = [];
-            }
+        // حالة التعديل
+        let editingPartId = null;
+
+        // حفظ البيانات في localStorage
+        function saveParts() {
+            localStorage.setItem('castle-parts', JSON.stringify(parts));
+            updatePartsCount();
         }
         
         // حفظ سلة المشتريات
         function saveCart() {
-            try {
-                localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
-                updateCartUI();
-            } catch (error) {
-                console.error('خطأ في حفظ سلة المشتريات:', error);
-            }
+            localStorage.setItem('castle-cart', JSON.stringify(cart));
+            updateCartUI();
+            updateCartCountAdmin();
         }
 
         // تحديث واجهة سلة المشتريات
@@ -821,17 +992,15 @@
                 cartSection.style.display = 'none';
             }
         }
-
-        // عرض معلومات التصحيح
-        function updateDebugInfo(message) {
-            const debugInfo = document.getElementById('debug-info');
-            debugInfo.innerHTML = `🔧 معلومات التصحيح: ${message} | القطع المحملة: ${parts.length}`;
-            debugInfo.style.display = 'block';
-            
-            // إخفاء المعلومات بعد 5 ثواني
-            setTimeout(() => {
-                debugInfo.style.display = 'none';
-            }, 5000);
+        
+        // تحديث عدد القطع في لوحة التحكم
+        function updatePartsCount() {
+            document.getElementById('parts-count').textContent = parts.length;
+        }
+        
+        // تحديث عدد القطع في السلة في لوحة التحكم
+        function updateCartCountAdmin() {
+            document.getElementById('cart-count-admin').textContent = cart.length;
         }
 
         // عرض رسالة للمستخدم
@@ -878,7 +1047,7 @@
                 // إخفاء جميع النماذج
                 document.getElementById('search-form').style.display = 'none';
                 document.getElementById('view-all').style.display = 'none';
-                document.getElementById('add-form').style.display = 'none';
+                document.getElementById('categories').style.display = 'none';
                 
                 // إظهار النموذج المناسب
                 const tabId = this.getAttribute('data-tab');
@@ -890,15 +1059,16 @@
                     document.getElementById('view-all').style.display = 'block';
                     document.getElementById('view-all').classList.add('fade-in');
                     displayAllParts();
-                } else if (tabId === 'add') {
-                    document.getElementById('add-form').style.display = 'block';
-                    document.getElementById('add-form').classList.add('fade-in');
-                    // إخفاء محتوى الإضافة وإظهار قسم كلمة المرور فقط
-                    document.getElementById('add-form-content').style.display = 'none';
-                    document.querySelector('.password-section').style.display = 'block';
-                    document.getElementById('password-input').value = '';
+                } else if (tabId === 'categories') {
+                    document.getElementById('categories').style.display = 'block';
+                    document.getElementById('categories').classList.add('fade-in');
                 }
             });
+        });
+
+        // فتح/إغلاق لوحة التحكم
+        document.getElementById('admin-toggle').addEventListener('click', function() {
+            document.getElementById('admin-panel').classList.toggle('open');
         });
 
         // التحقق من الرمز السري
@@ -906,9 +1076,11 @@
             const password = document.getElementById('password-input').value.trim();
             
             if (password === SECRET_PASSWORD) {
-                document.getElementById('add-form-content').style.display = 'block';
-                document.querySelector('.password-section').style.display = 'none';
-                showMessage('تم فتح قسم الإضافة بنجاح!', 'success');
+                document.getElementById('admin-content').style.display = 'block';
+                document.getElementById('password-section').style.display = 'none';
+                updatePartsCount();
+                updateCartCountAdmin();
+                showMessage('تم فتح لوحة التحكم بنجاح!', 'success');
             } else {
                 showMessage('الرمز السري غير صحيح!', 'error');
             }
@@ -947,6 +1119,54 @@
             showMessage('تم إضافة القطعة بنجاح!', 'success');
             
             // مسح الحقول
+            resetForm();
+            
+            // تحديث عرض جميع القطع
+            displayAllParts();
+        });
+
+        // تحديث قطعة غيار
+        document.getElementById('update-part-btn').addEventListener('click', function() {
+            const name = document.getElementById('part-name').value.trim();
+            const number = document.getElementById('part-number').value.trim();
+            const brand = document.getElementById('part-brand').value;
+            const price = document.getElementById('part-price').value.trim();
+            const description = document.getElementById('part-description').value.trim();
+            const imageData = document.getElementById('image-preview-container').dataset.imageData;
+            
+            if (!name || !number || !price) {
+                showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
+                return;
+            }
+            
+            // تحديث القطعة
+            const partIndex = parts.findIndex(p => p.id === editingPartId);
+            if (partIndex !== -1) {
+                parts[partIndex] = {
+                    ...parts[partIndex],
+                    name,
+                    number,
+                    brand,
+                    price,
+                    description,
+                    image: imageData || parts[partIndex].image
+                };
+                
+                saveParts();
+                showMessage('تم تحديث القطعة بنجاح!', 'success');
+                resetForm();
+                displayAllParts();
+            }
+        });
+
+        // إلغاء التعديل
+        document.getElementById('cancel-edit-btn').addEventListener('click', function() {
+            resetForm();
+            showMessage('تم إلغاء التعديل', 'success');
+        });
+
+        // مسح الحقول
+        function resetForm() {
             document.getElementById('part-name').value = '';
             document.getElementById('part-number').value = '';
             document.getElementById('part-price').value = '';
@@ -955,9 +1175,13 @@
             document.getElementById('image-preview-container').style.display = 'none';
             document.getElementById('image-preview-container').dataset.imageData = '';
             
-            // تحديث عرض جميع القطع
-            displayAllParts();
-        });
+            // إعادة ضبط الأزرار
+            document.getElementById('add-part-btn').style.display = 'block';
+            document.getElementById('update-part-btn').style.display = 'none';
+            document.getElementById('cancel-edit-btn').style.display = 'none';
+            
+            editingPartId = null;
+        }
 
         // البحث عن قطع الغيار
         document.getElementById('search-btn').addEventListener('click', performSearch);
@@ -1015,11 +1239,10 @@
                 container.innerHTML = `
                     <div class="empty-state">
                         <p>لا توجد قطع غيار مضافة بعد</p>
-                        <p style="margin-top: 10px; font-size: 0.9rem; color: #999;">انتقل إلى تبويب "إضافة قطعة غيار" لإضافة قطع جديدة</p>
+                        <p style="margin-top: 10px; font-size: 0.9rem; color: #999;">استخدم لوحة التحكم لإضافة قطع جديدة</p>
                     </div>
                 `;
             } else {
-                // تمرير true لعرض أزرار الشراء في قسم عرض جميع القطع
                 displayParts(parts, container, true);
             }
         }
@@ -1036,6 +1259,7 @@
                 
                 partCard.innerHTML = `
                     <button class="delete-btn" data-id="${part.id}">🗑️</button>
+                    <button class="edit-btn" data-id="${part.id}">✏️</button>
                     <div class="part-image">
                         <img src="${part.image}" alt="${part.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZjNzU3ZCI+${encodeURIComponent(part.name)}PC90ZXh0Pjwvc3ZnPg=='">
                     </div>
@@ -1074,6 +1298,41 @@
                         }
                     } else if (password !== null) {
                         showMessage('الرمز السري غير صحيح!', 'error');
+                    }
+                });
+            });
+            
+            // إضافة مستمعين لأزرار التعديل
+            container.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const partId = parseInt(this.getAttribute('data-id'));
+                    const part = parts.find(p => p.id === partId);
+                    
+                    if (part) {
+                        // فتح لوحة التحكم إذا كانت مغلقة
+                        document.getElementById('admin-panel').classList.add('open');
+                        
+                        // تعبئة الحقول ببيانات القطعة
+                        document.getElementById('part-name').value = part.name;
+                        document.getElementById('part-number').value = part.number;
+                        document.getElementById('part-brand').value = part.brand;
+                        document.getElementById('part-price').value = part.price;
+                        document.getElementById('part-description').value = part.description || '';
+                        
+                        // عرض الصورة إذا كانت موجودة
+                        if (part.image) {
+                            const previewContainer = document.getElementById('image-preview-container');
+                            previewContainer.innerHTML = `<img src="${part.image}" alt="معاينة الصورة">`;
+                            previewContainer.style.display = 'flex';
+                            previewContainer.dataset.imageData = part.image;
+                        }
+                        
+                        // تغيير الأزرار لوضع التعديل
+                        document.getElementById('add-part-btn').style.display = 'none';
+                        document.getElementById('update-part-btn').style.display = 'block';
+                        document.getElementById('cancel-edit-btn').style.display = 'block';
+                        
+                        editingPartId = partId;
                     }
                 });
             });
@@ -1138,6 +1397,33 @@
             window.open(whatsappURL, '_blank');
         });
 
+        // تصفية حسب العلامة التجارية
+        function filterByBrand(brandPrefix) {
+            // التبديل إلى تبويب عرض جميع القطع
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('[data-tab="view"]').classList.add('active');
+            
+            document.getElementById('search-form').style.display = 'none';
+            document.getElementById('categories').style.display = 'none';
+            document.getElementById('view-all').style.display = 'block';
+            document.getElementById('view-all').classList.add('fade-in');
+            
+            // تصفية القطع حسب العلامة التجارية
+            const filteredParts = parts.filter(part => part.brand.startsWith(brandPrefix));
+            const container = document.getElementById('all-parts');
+            
+            if (filteredParts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p>لا توجد قطع غيار لهذه العلامة التجارية بعد</p>
+                        <p style="margin-top: 10px; font-size: 0.9rem; color: #999;">استخدم لوحة التحكم لإضافة قطع جديدة</p>
+                    </div>
+                `;
+            } else {
+                displayParts(filteredParts, container, true);
+            }
+        }
+
         // تنسيق السعر
         function formatPrice(price) {
             return Number(price).toLocaleString('ar-SD');
@@ -1148,6 +1434,30 @@
             const brands = {
                 'howo-371': 'HOWO 371',
                 'howo-420': 'HOWO 420',
+                'howo-336': 'HOWO 336',
+                'howo-380': 'HOWO 380',
+                'howo-340': 'HOWO 340',
+                'howo-310': 'HOWO 310',
+                'weichai-wp10': 'Weichai WP10',
+                'weichai-wp12': 'Weichai WP12',
+                'weichai-wp13': 'Weichai WP13',
+                'yuchai-yc6a': 'Yuchai YC6A',
+                'yuchai-yc6l': 'Yuchai YC6L',
+                'yuchai-yc6m': 'Yuchai YC6M',
+                'cac-deutz-1013': 'CAC DEUTZ 1013',
+                'cac-deutz-2012': 'CAC DEUTZ 2012',
+                'cac-deutz-2013': 'CAC DEUTZ 2013',
+                'faw-deutz-fd68': 'FAW DEUTZ FD68',
+                'faw-deutz-fd78': 'FAW DEUTZ FD78',
+                'isuzu-4hk1': 'ISUZU 4HK1',
+                'isuzu-6hk1': 'ISUZU 6HK1',
+                'isuzu-6wg1': 'ISUZU 6WG1',
+                'shacman-wp10': 'Shacman WP10',
+                'shacman-wp12': 'Shacman WP12',
+                'foton-isf3.8': 'Foton ISF3.8',
+                'foton-isf4.5': 'Foton ISF4.5',
+                'dongfeng-dci11': 'Dongfeng dCi11',
+                'dongfeng-4h': 'Dongfeng 4H',
                 'cat': 'CAT (لودر)',
                 'str': 'STR (مكنة الشاحنة الاستاير)',
                 'deutz': 'Deutz',
@@ -1160,25 +1470,17 @@
 
         // تهيئة الصفحة عند التحميل
         document.addEventListener('DOMContentLoaded', function() {
-            // تحميل البيانات أولاً
-            loadParts();
-            loadCart();
-            
             // عرض قسم البحث أولاً
             document.getElementById('search-form').style.display = 'block';
             
-            // إظهار معلومات البدء
-            updateDebugInfo(`تم تحميل ${parts.length} قطعة و ${cart.length} عنصر في السلة`);
+            // حفظ البيانات الأولية إذا لم تكن موجودة
+            if (!localStorage.getItem('castle-parts')) {
+                saveParts();
+            }
+            
+            // تحديث واجهة سلة المشتريات
+            updateCartUI();
         });
-
-        // زر إضافي لتصحيح المشكلة يدوياً
-        function forceSave() {
-            saveParts();
-            showMessage('تم حفظ البيانات يدوياً!', 'success');
-        }
-
-        // إضافة زر تصحيح في الكونسول
-        console.log('لتصحيح المشكلة يدوياً، استخدم: forceSave()');
     </script>
 </body>
 </html>
