@@ -1,9 +1,9 @@
-            <!DOCTYPE html>   
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>القلعة الصينية للإسبيرات - قطع غيار الشاحنات</title>
+    <title>القلعة الصينية للإسبيرات</title>
     <style>
         :root {
             --primary-color: #1a5276;
@@ -19,7 +19,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
         }
         
         body {
@@ -31,7 +31,7 @@
         }
         
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
@@ -51,6 +51,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
         }
         
         .logo {
@@ -75,56 +76,82 @@
             margin-bottom: 5px;
         }
         
-        /* Admin Panel */
-        .admin-panel {
-            position: fixed;
-            top: 100px;
-            left: 20px;
-            width: 350px;
-            background: white;
-            border-radius: var(--radius);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-            z-index: 99;
-            padding: 20px;
-            transition: transform 0.3s ease;
-            transform: translateX(-400px);
+        /* Settings Menu (النقاط الثلاث) */
+        .settings-menu {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
         }
         
-        .admin-panel.open {
-            transform: translateX(0);
-        }
-        
-        .admin-toggle {
-            position: fixed;
-            top: 120px;
-            left: 20px;
-            background: var(--secondary-color);
-            color: white;
+        .settings-toggle {
+            background: none;
             border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            color: white;
             font-size: 1.5rem;
             cursor: pointer;
-            z-index: 100;
-            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
-            transition: all 0.3s;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.3s;
         }
         
-        .admin-toggle:hover {
-            transform: scale(1.1);
+        .settings-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
         
-        .admin-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
+        .settings-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            min-width: 300px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 1rem;
+            margin-top: 10px;
+            display: none;
+            z-index: 1000;
+        }
+        
+        .settings-dropdown.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .settings-dropdown h3 {
             color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 2px solid var(--light-color);
-            padding-bottom: 10px;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .settings-form .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .settings-form label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #555;
+            font-size: 0.9rem;
+        }
+        
+        .settings-form input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1.5px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            background: #fafbfc;
+        }
+        
+        .settings-form input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(26, 82, 118, 0.1);
         }
         
         /* Tabs */
@@ -211,6 +238,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            width: 100%;
             box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
         }
         
@@ -235,25 +263,6 @@
         
         .btn-success:hover {
             box-shadow: 0 6px 16px rgba(39, 174, 96, 0.4);
-        }
-        
-        .btn-edit {
-            background: linear-gradient(135deg, #3498db, #2980b9);
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-        }
-        
-        .btn-edit:hover {
-            box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
-        }
-        
-        .btn-full {
-            width: 100%;
-        }
-        
-        .btn-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
         }
         
         /* Parts Grid */
@@ -329,41 +338,40 @@
             margin-top: 0.5rem;
         }
         
-        .delete-btn {
-            background: #e74c3c;
+        /* أزرار التعديل والحذف */
+        .part-actions {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            gap: 5px;
+        }
+        
+        .edit-btn, .delete-btn {
             color: white;
             border: none;
             padding: 0.3rem 0.6rem;
             border-radius: 20px;
             cursor: pointer;
             font-size: 0.8rem;
-            position: absolute;
-            top: 10px;
-            left: 10px;
             transition: all 0.3s;
-        }
-        
-        .delete-btn:hover {
-            background: #c0392b;
-            transform: scale(1.1);
         }
         
         .edit-btn {
             background: #3498db;
-            color: white;
-            border: none;
-            padding: 0.3rem 0.6rem;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            position: absolute;
-            top: 10px;
-            left: 50px;
-            transition: all 0.3s;
+        }
+        
+        .delete-btn {
+            background: #e74c3c;
         }
         
         .edit-btn:hover {
             background: #2980b9;
+            transform: scale(1.1);
+        }
+        
+        .delete-btn:hover {
+            background: #c0392b;
             transform: scale(1.1);
         }
         
@@ -590,35 +598,164 @@
             margin-bottom: 0.5rem;
         }
         
+        /* Categories Grid */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .category-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+            cursor: pointer;
+            text-align: center;
+            padding: 2rem 1.5rem;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .category-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .category-name {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .category-count {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        
+        /* Back Button */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .back-button:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(26, 82, 118, 0.3);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            animation: modalFadeIn 0.3s ease;
+        }
+        
+        .modal-header {
+            padding: 1.5rem;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        /* WhatsApp Order Form */
+        .order-form {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 1.5rem;
+        }
+        
+        .order-form h4 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .order-items {
+            margin-bottom: 1rem;
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .order-total {
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 1rem 0;
+            border-top: 2px solid var(--primary-color);
+            margin-top: 1rem;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
         /* Responsive */
-        @media (max-width: 1200px) {
-            .admin-panel {
-                width: 300px;
-            }
-        }
-        
-        @media (max-width: 992px) {
-            .admin-panel {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                z-index: 1000;
-                transform: translateX(-100%);
-                border-radius: 0;
-            }
-            
-            .admin-panel.open {
-                transform: translateX(0);
-            }
-            
-            .admin-toggle {
-                top: 20px;
-                left: 20px;
-            }
-        }
-        
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
@@ -626,12 +763,26 @@
                 gap: 1rem;
             }
             
+            .settings-menu {
+                position: absolute;
+                left: 0;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+            
+            .settings-dropdown {
+                left: 0;
+                right: auto;
+                width: 90vw;
+                max-width: 300px;
+            }
+            
             .tabs {
                 flex-direction: column;
                 padding: 5px;
             }
             
-            .parts-grid {
+            .parts-grid, .categories-grid {
                 grid-template-columns: 1fr;
             }
             
@@ -660,16 +811,81 @@
         .fade-in {
             animation: fadeIn 0.5s ease forwards;
         }
+        
+        /* Firebase Status */
+        .firebase-status {
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .firebase-connected {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .firebase-disconnected {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
     </style>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <header>
         <div class="container">
             <div class="header-content">
-                <div class="logo">
+                <!-- قائمة الإعدادات (النقاط الثلاث) -->
+                <div class="settings-menu">
+                    <button class="settings-toggle">⋮</button>
+                    <div class="settings-dropdown">
+                        <h3>إعدادات المتجر</h3>
+                        
+                        <div class="password-section">
+                            <input type="password" id="settings-password" class="password-input" placeholder="أدخل الرمز السري للوصول">
+                            <button class="btn" id="settings-password-btn">فتح الإعدادات</button>
+                        </div>
+                        
+                        <div id="settings-form-content" style="display: none;">
+                            <form class="settings-form" id="settings-form">
+                                <div class="form-group">
+                                    <label for="company-name">اسم الشركة</label>
+                                    <input type="text" id="company-name" placeholder="اسم الشركة">
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone-number">رقم الهاتف</label>
+                                    <input type="text" id="phone-number" placeholder="رقم الهاتف">
+                                </div>
+                                <div class="form-group">
+                                    <label for="whatsapp-number">رقم الواتساب</label>
+                                    <input type="text" id="whatsapp-number" placeholder="رقم الواتساب">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">البريد الإلكتروني</label>
+                                    <input type="email" id="email" placeholder="البريد الإلكتروني">
+                                </div>
+                                
+                                <div id="firebase-status" class="firebase-status" style="display: none;">
+                                    <!-- حالة Firebase تظهر هنا -->
+                                </div>
+                                
+                                <button type="button" class="btn btn-secondary" id="save-settings">حفظ الإعدادات</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="logo" id="company-logo">
                     <span>القلعة الصينية</span> للإسبيرات
                 </div>
-                <div class="contact-header">
+                <div class="contact-header" id="contact-info">
                     <div>📍 السودان - مدني</div>
                     <div>📞 00249969688826</div>
                 </div>
@@ -677,105 +893,12 @@
         </div>
     </header>
 
-    <!-- Admin Panel -->
-    <button class="admin-toggle" id="admin-toggle">⚙️</button>
-    <div class="admin-panel" id="admin-panel">
-        <h2 class="admin-title">🔧 لوحة التحكم</h2>
-        
-        <div class="password-section" id="password-section">
-            <h3>🔒 الوصول إلى لوحة التحكم</h3>
-            <input type="password" id="password-input" class="password-input" placeholder="أدخل الرمز السري للوصول">
-            <button class="btn btn-full" id="password-btn">فتح لوحة التحكم</button>
-        </div>
-        
-        <div id="admin-content" style="display: none;">
-            <div class="form-group">
-                <label for="part-name">اسم القطعة</label>
-                <input type="text" id="part-name" placeholder="مثال: فلتر زيت محرك">
-            </div>
-            <div class="form-group">
-                <label for="part-number">رقم القطعة</label>
-                <input type="text" id="part-number" placeholder="مثال: HW-78234">
-            </div>
-            <div class="form-group">
-                <label for="part-brand">العلامة التجارية</label>
-                <select id="part-brand">
-                    <option value="howo-371">HOWO 371</option>
-                    <option value="howo-420">HOWO 420</option>
-                    <option value="howo-336">HOWO 336</option>
-                    <option value="howo-380">HOWO 380</option>
-                    <option value="howo-340">HOWO 340</option>
-                    <option value="howo-310">HOWO 310</option>
-                    <option value="weichai-wp10">Weichai WP10</option>
-                    <option value="weichai-wp12">Weichai WP12</option>
-                    <option value="weichai-wp13">Weichai WP13</option>
-                    <option value="yuchai-yc6a">Yuchai YC6A</option>
-                    <option value="yuchai-yc6l">Yuchai YC6L</option>
-                    <option value="yuchai-yc6m">Yuchai YC6M</option>
-                    <option value="cac-deutz-1013">CAC DEUTZ 1013</option>
-                    <option value="cac-deutz-2012">CAC DEUTZ 2012</option>
-                    <option value="cac-deutz-2013">CAC DEUTZ 2013</option>
-                    <option value="faw-deutz-fd68">FAW DEUTZ FD68</option>
-                    <option value="faw-deutz-fd78">FAW DEUTZ FD78</option>
-                    <option value="isuzu-4hk1">ISUZU 4HK1</option>
-                    <option value="isuzu-6hk1">ISUZU 6HK1</option>
-                    <option value="isuzu-6wg1">ISUZU 6WG1</option>
-                    <option value="shacman-wp10">Shacman WP10</option>
-                    <option value="shacman-wp12">Shacman WP12</option>
-                    <option value="foton-isf3.8">Foton ISF3.8</option>
-                    <option value="foton-isf4.5">Foton ISF4.5</option>
-                    <option value="dongfeng-dci11">Dongfeng dCi11</option>
-                    <option value="dongfeng-4h">Dongfeng 4H</option>
-                    <option value="cat">CAT (لودر)</option>
-                    <option value="str">STR (مكنة الشاحنة الاستاير)</option>
-                    <option value="deutz">Deutz</option>
-                    <option value="sinotruk">SINOTRUK</option>
-                    <option value="foton">FOTON</option>
-                    <option value="other">أخرى</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="part-price">السعر (جنيه سوداني)</label>
-                <input type="number" id="part-price" placeholder="مثال: 12000">
-            </div>
-            
-            <div class="form-group">
-                <label>صورة القطعة</label>
-                <div class="image-upload" id="image-upload">
-                    <div class="image-upload-icon">📷</div>
-                    <p>انقر لرفع صورة القطعة</p>
-                </div>
-                <input type="file" id="part-image-file" accept="image/*" style="display: none;">
-                <div id="image-preview-container" class="image-preview" style="display: none;">
-                    <!-- معاينة الصورة تظهر هنا -->
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="part-description">وصف القطعة (اختياري)</label>
-                <textarea id="part-description" rows="3" placeholder="معلومات إضافية عن القطعة"></textarea>
-            </div>
-            
-            <div class="btn-group">
-                <button class="btn btn-success" id="add-part-btn">إضافة القطعة</button>
-                <button class="btn btn-edit" id="update-part-btn" style="display: none;">تحديث القطعة</button>
-                <button class="btn btn-secondary" id="cancel-edit-btn" style="display: none;">إلغاء التعديل</button>
-            </div>
-            
-            <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
-                <h3 style="font-size: 1.1rem; margin-bottom: 10px;">إحصائيات</h3>
-                <p>عدد القطع: <span id="parts-count">0</span></p>
-                <p>عدد القطع في السلة: <span id="cart-count-admin">0</span></p>
-            </div>
-        </div>
-    </div>
-
     <div class="container">
         <!-- Tabs -->
         <div class="tabs">
             <div class="tab active" data-tab="search">البحث عن قطعة</div>
-            <div class="tab" data-tab="view">عرض جميع القطع</div>
-            <div class="tab" data-tab="categories">التصنيفات</div>
+            <div class="tab" data-tab="engines">المحركات</div>
+            <div class="tab" data-tab="add">إضافة قطعة غيار</div>
         </div>
 
         <!-- Messages -->
@@ -801,64 +924,175 @@
             </div>
         </div>
 
-        <!-- View All Parts -->
-        <div id="view-all" class="form-container" style="display: none;">
-            <h2 class="form-title">📋 جميع قطع الغيار</h2>
-            <div class="parts-grid" id="all-parts">
-                <!-- جميع القطع تظهر هنا -->
+        <!-- Engines and Parts -->
+        <div id="engines-parts" class="form-container" style="display: none;">
+            <h2 class="form-title">🛠️ المحركات</h2>
+            
+            <div class="categories-grid" id="categories-container">
+                <!-- الفئات تظهر هنا -->
+            </div>
+            
+            <div id="category-parts" class="parts-grid" style="display: none; margin-top: 2rem;">
+                <!-- قطع الفئة المحددة تظهر هنا -->
             </div>
         </div>
 
-        <!-- Categories -->
-        <div id="categories" class="form-container" style="display: none;">
-            <h2 class="form-title">📂 التصنيفات</h2>
-            <div class="parts-grid">
-                <div class="part-card">
-                    <div class="part-image" style="background: linear-gradient(135deg, #3498db, #2980b9);">
-                        <span style="color: white; font-size: 2rem;">🚛</span>
+        <!-- Add Part Form (Hidden by default) -->
+        <div id="add-form" class="form-container" style="display: none;">
+            <div class="password-section">
+                <h3>🔒 الوصول إلى إضافة القطع</h3>
+                <input type="password" id="password-input" class="password-input" placeholder="أدخل الرمز السري للوصول">
+                <button class="btn" id="password-btn">فتح قسم الإضافة</button>
+            </div>
+            
+            <div id="add-form-content" style="display: none;">
+                <h2 class="form-title">➕ إضافة قطعة غيار جديدة</h2>
+                <div class="form-group">
+                    <label for="part-name">اسم القطعة</label>
+                    <input type="text" id="part-name" placeholder="مثال: فلتر زيت محرك">
+                </div>
+                <div class="form-group">
+                    <label for="part-number">رقم القطعة</label>
+                    <input type="text" id="part-number" placeholder="مثال: HW-78234">
+                </div>
+                <div class="form-group">
+                    <label for="part-category">الفئة</label>
+                    <select id="part-category">
+                        <option value="howo-371">HOWO 371</option>
+                        <option value="howo-420">HOWO 420</option>
+                        <option value="deutz">Deutz</option>
+                        <option value="cat">CAT (لودر)</option>
+                        <option value="g-loader">لودر G</option>
+                        <option value="gn-loader">لودر GN</option>
+                        <option value="str">STR (باص الاستاير)</option>
+                        <option value="bearings">السبائك</option>
+                        <option value="filters">المصافي (زيت، جاز، رطوبة)</option>
+                        <option value="fans">المراوح</option>
+                        <option value="belts">السيور</option>
+                        <option value="clutch">جهاز الكلتش</option>
+                        <option value="pumps">الطرمبات (قبين، هايدروليك، ماء، زيت)</option>
+                        <option value="lights">الأنوار والفوانيس</option>
+                        <option value="mirrors">المرايات</option>
+                        <option value="screws">المسامير</option>
+                        <option value="kits">صناديق العمرات</option>
+                        <option value="other">أخرى</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="part-price">السعر (جنيه سوداني)</label>
+                    <input type="number" id="part-price" placeholder="مثال: 12000">
+                </div>
+                
+                <div class="form-group">
+                    <label>صورة القطعة</label>
+                    <div class="image-upload" id="image-upload">
+                        <div class="image-upload-icon">📷</div>
+                        <p>انقر لرفع صورة القطعة</p>
+                        <p style="font-size: 0.9rem; color: #6c757d; margin-top: 0.5rem;">يمكنك التقاط صورة أو اختيارها من المعرض</p>
                     </div>
-                    <div class="part-info">
-                        <div class="part-name">قطع غيار HOWO</div>
-                        <div class="part-brand">HOWO 371, 420, 336, 380, 340, 310</div>
-                        <p style="color: #666; margin-top: 0.8rem;">جميع قطع غيار شاحنات HOWO بمختلف موديلاتها</p>
-                        <button class="buy-btn" onclick="filterByBrand('howo')">عرض القطع</button>
+                    <input type="file" id="part-image-file" accept="image/*" style="display: none;">
+                    <div id="image-preview-container" class="image-preview" style="display: none;">
+                        <!-- معاينة الصورة تظهر هنا -->
                     </div>
                 </div>
                 
-                <div class="part-card">
-                    <div class="part-image" style="background: linear-gradient(135deg, #e74c3c, #c0392b);">
-                        <span style="color: white; font-size: 2rem;">🔧</span>
-                    </div>
-                    <div class="part-info">
-                        <div class="part-name">قطع غيار Weichai</div>
-                        <div class="part-brand">WP10, WP12, WP13</div>
-                        <p style="color: #666; margin-top: 0.8rem;">قطع غيار محركات Weichai بمختلف أنواعها</p>
-                        <button class="buy-btn" onclick="filterByBrand('weichai')">عرض القطع</button>
-                    </div>
+                <div class="form-group">
+                    <label for="part-description">وصف القطعة (اختياري)</label>
+                    <textarea id="part-description" rows="3" placeholder="معلومات إضافية عن القطعة"></textarea>
                 </div>
                 
-                <div class="part-card">
-                    <div class="part-image" style="background: linear-gradient(135deg, #f39c12, #e67e22);">
-                        <span style="color: white; font-size: 2rem;">🚜</span>
+                <button class="btn" id="add-part-btn">إضافة القطعة</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal لتعديل القطع -->
+    <div class="modal" id="edit-part-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>تعديل قطعة الغيار</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-part-form">
+                    <input type="hidden" id="edit-part-id">
+                    <div class="form-group">
+                        <label for="edit-part-name">اسم القطعة</label>
+                        <input type="text" id="edit-part-name" placeholder="اسم القطعة">
                     </div>
-                    <div class="part-info">
-                        <div class="part-name">قطع غيار CAT</div>
-                        <div class="part-brand">لودر ومعدات ثقيلة</div>
-                        <p style="color: #666; margin-top: 0.8rem;">قطع غيار لوادر ومعدات CAT الثقيلة</p>
-                        <button class="buy-btn" onclick="filterByBrand('cat')">عرض القطع</button>
+                    <div class="form-group">
+                        <label for="edit-part-number">رقم القطعة</label>
+                        <input type="text" id="edit-part-number" placeholder="رقم القطعة">
                     </div>
+                    <div class="form-group">
+                        <label for="edit-part-category">الفئة</label>
+                        <select id="edit-part-category">
+                            <option value="howo-371">HOWO 371</option>
+                            <option value="howo-420">HOWO 420</option>
+                            <option value="deutz">Deutz</option>
+                            <option value="cat">CAT (لودر)</option>
+                            <option value="g-loader">لودر G</option>
+                            <option value="gn-loader">لودر GN</option>
+                            <option value="str">STR (باص الاستاير)</option>
+                            <option value="bearings">السبائك</option>
+                            <option value="filters">المصافي (زيت، جاز، رطوبة)</option>
+                            <option value="fans">المراوح</option>
+                            <option value="belts">السيور</option>
+                            <option value="clutch">جهاز الكلتش</option>
+                            <option value="pumps">الطرمبات (قبين، هايدروليك، ماء، زيت)</option>
+                            <option value="lights">الأنوار والفوانيس</option>
+                            <option value="mirrors">المرايات</option>
+                            <option value="screws">المسامير</option>
+                            <option value="kits">صناديق العمرات</option>
+                            <option value="other">أخرى</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-part-price">السعر (جنيه سوداني)</label>
+                        <input type="number" id="edit-part-price" placeholder="السعر">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>صورة القطعة</label>
+                        <div class="image-upload" id="edit-image-upload">
+                            <div class="image-upload-icon">📷</div>
+                            <p>انقر لتغيير صورة القطعة</p>
+                            <p style="font-size: 0.9rem; color: #6c757d; margin-top: 0.5rem;">يمكنك التقاط صورة أو اختيارها من المعرض</p>
+                        </div>
+                        <input type="file" id="edit-part-image-file" accept="image/*" style="display: none;">
+                        <div id="edit-image-preview-container" class="image-preview">
+                            <!-- معاينة الصورة الحالية تظهر هنا -->
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit-part-description">وصف القطعة (اختياري)</label>
+                        <textarea id="edit-part-description" rows="3" placeholder="وصف القطعة"></textarea>
+                    </div>
+                    <button type="button" class="btn btn-secondary" id="update-part-btn">تحديث القطعة</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal لعرض سلة المشتريات وإرسال الطلب -->
+    <div class="modal" id="cart-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>سلة المشتريات</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="cart-items" class="order-items">
+                    <!-- عناصر السلة تظهر هنا -->
+                </div>
+                <div id="cart-total" class="order-total">
+                    <!-- المجموع يظهر هنا -->
                 </div>
                 
-                <div class="part-card">
-                    <div class="part-image" style="background: linear-gradient(135deg, #9b59b6, #8e44ad);">
-                        <span style="color: white; font-size: 2rem;">🚚</span>
-                    </div>
-                    <div class="part-info">
-                        <div class="part-name">قطع غيار أخرى</div>
-                        <div class="part-brand">ISUZU, FOTON, SHACMAN, YUCHAI</div>
-                        <p style="color: #666; margin-top: 0.8rem;">قطع غيار للعلامات التجارية الأخرى</p>
-                        <button class="buy-btn" onclick="filterByBrand('other')">عرض القطع</button>
-                    </div>
+                <div class="order-form">
+                    <h4>إرسال الطلب</h4>
+                    <button class="btn btn-success" id="send-whatsapp">إرسال الطلب عبر واتساب</button>
                 </div>
             </div>
         </div>
@@ -874,19 +1108,19 @@
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h3>القلعة الصينية للإسبيرات</h3>
+                    <h3 id="footer-company-name">القلعة الصينية للإسبيرات</h3>
                     <p>متخصصون في توفير قطع غيار الشاحنات والمعدات الصينية الأصلية بأسعار تنافسية وخدمة موثوقة.</p>
                 </div>
                 <div class="footer-section">
                     <h3>معلومات الاتصال</h3>
-                    <p>📍 السودان - مدني</p>
-                    <a href="tel:00249969688826">📞 00249969688826</a>
+                    <p id="footer-address">📍 السودان - مدني</p>
+                    <a href="tel:00249969688826" id="footer-phone">📞 00249969688826</a>
+                    <a href="mailto:info@example.com" id="footer-email" style="display: none;">✉️ البريد الإلكتروني</a>
                 </div>
                 <div class="footer-section">
                     <h3>العلامات التجارية</h3>
-                    <p>HOWO • Weichai • Yuchai • CAC DEUTZ</p>
-                    <p>FAW DEUTZ • ISUZU • SHACMAN • FOTON</p>
-                    <p>DONGFENG • CAT • SINOTRUK</p>
+                    <p>HOWO 371 • HOWO 420 • CAT</p>
+                    <p>STR • Deutz • SINOTRUK • FOTON</p>
                 </div>
             </div>
             <div class="copyright">
@@ -896,13 +1130,17 @@
     </footer>
 
     <script>
+        // تهيئة Firebase
+        let db = null;
+        let firebaseInitialized = false;
+        
         // بيانات أولية لقطع الغيار
         let parts = JSON.parse(localStorage.getItem('castle-parts')) || [
             {
                 id: 1,
                 name: "فلتر زيت محرك",
                 number: "HW-78234",
-                brand: "howo-371",
+                category: "howo-371",
                 price: "12000",
                 description: "فلتر زيت أصلي للشاحنات الثقيلة",
                 image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZjNzU3ZCI+SE9XTyAzNzE8L3RleHQ+PC9zdmc+"
@@ -911,7 +1149,7 @@
                 id: 2,
                 name: "قرص مكابح أمامي",
                 number: "ST-45612",
-                brand: "str",
+                category: "str",
                 price: "34000",
                 description: "قرص مكابح أمامي عالي الجودة",
                 image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZjNzU3ZCI+U1RSPC90ZXh0Pjwvc3ZnPg=="
@@ -920,37 +1158,10 @@
                 id: 3,
                 name: "مرشح هواء",
                 number: "FT-89123",
-                brand: "deutz",
+                category: "deutz",
                 price: "8500",
                 description: "مرشح هواء لمحركات الديزل",
                 image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZjNzU3ZCI+RGV1dHo8L3RleHQ+PC9zdmc+"
-            },
-            {
-                id: 4,
-                name: "حاقن وقود",
-                number: "WP12-INJ-001",
-                brand: "weichai-wp12",
-                price: "45000",
-                description: "حاقن وقود لمحركات Weichai WP12",
-                image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZjNzU3ZCI+V2VpY2hhaSBXUDEyPC90ZXh0Pjwvc3ZnPg=="
-            },
-            {
-                id: 5,
-                name: "طرمبة مياه",
-                number: "YC6A-WP-002",
-                brand: "yuchai-yc6a",
-                price: "28000",
-                description: "طرمبة مياه لمحركات Yuchai YC6A",
-                image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZjNzU3ZCI+WXVjaGFpIFlDNkE8L3RleHQ+PC9zdmc+"
-            },
-            {
-                id: 6,
-                name: "بستم محرك",
-                number: "ISZ-6HK1-PST",
-                brand: "isuzu-6hk1",
-                price: "32000",
-                description: "بستم محرك لشاحنات ISUZU 6HK1",
-                image: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZjNzU3ZCI+SVNVRVogNkhLMQ==PC90ZXh0Pjwvc3ZnPg=="
             }
         ];
 
@@ -961,23 +1172,135 @@
         const SECRET_PASSWORD = "787898";
         const DELETE_PASSWORD = "787898";
         
-        // رقم واتساب
-        const WHATSAPP_NUMBER = "+249969688826";
+        // إعدادات المتجر
+        let storeSettings = JSON.parse(localStorage.getItem('castle-settings')) || {
+            companyName: "القلعة الصينية للإسبيرات",
+            phoneNumber: "00249969688826",
+            whatsappNumber: "+249969688826",
+            email: ""
+        };
         
-        // حالة التعديل
-        let editingPartId = null;
+        // رقم واتساب
+        let WHATSAPP_NUMBER = storeSettings.whatsappNumber || "+249969688826";
+
+        // فئات المحركات فقط
+        const engineCategories = [
+            { id: "howo-371", name: "HOWO 371", icon: "🚛", description: "قطع غيار شاحنات HOWO 371" },
+            { id: "howo-420", name: "HOWO 420", icon: "🚚", description: "قطع غيار شاحنات HOWO 420" },
+            { id: "deutz", name: "Deutz", icon: "🔧", description: "قطع غيار محركات Deutz" },
+            { id: "cat", name: "CAT (لودر)", icon: "🚜", description: "قطع غيار لوادر CAT" },
+            { id: "g-loader", name: "لودر G", icon: "🏗️", description: "قطع غيار لوادر G" },
+            { id: "gn-loader", name: "لودر GN", icon: "🚧", description: "قطع غيار لوادر GN" },
+            { id: "str", name: "STR (باص الاستاير)", icon: "🚌", description: "قطع غيار باصات الاستاير" }
+        ];
+
+        // جميع الفئات (للبحث والإضافة)
+        const allCategories = [
+            ...engineCategories,
+            { id: "bearings", name: "السبائك", icon: "⚙️", description: "السبائك والمحامل" },
+            { id: "filters", name: "المصافي", icon: "🧹", description: "مصافي الزيت، الجاز، والرطوبة" },
+            { id: "fans", name: "المراوح", icon: "🌀", description: "مراوح التبريد" },
+            { id: "belts", name: "السيور", icon: "📿", description: "سيور المحركات" },
+            { id: "clutch", name: "جهاز الكلتش", icon: "🎛️", description: "أجهزة الكلتش والدبرياج" },
+            { id: "pumps", name: "الطرمبات", icon: "⛽", description: "طرمبات القبين، الهايدروليك، الماء، والزيت" },
+            { id: "lights", name: "الأنوار والفوانيس", icon: "💡", description: "أنوار المركبات وفوانيسها" },
+            { id: "mirrors", name: "المرايات", icon: "👁️", description: "مرايات المركبات" },
+            { id: "screws", name: "المسامير", icon: "🔩", description: "مسامير المحركات والمركبات" },
+            { id: "kits", name: "صناديق العمرات", icon: "📦", description: "صناديق عمرات المحركات" }
+        ];
+
+        // تهيئة Firebase تلقائياً
+        function initializeFirebase() {
+            try {
+                // استبدل هذا التكوين بتكوين مشروع Firebase الخاص بك
+                const firebaseConfig = {
+                    apiKey: "AIzaSyC4Q8V7VcQ1X9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q",
+                    authDomain: "your-project.firebaseapp.com",
+                    projectId: "your-project",
+                    storageBucket: "your-project.appspot.com",
+                    messagingSenderId: "123456789",
+                    appId: "1:123456789:web:abcdef123456"
+                };
+                
+                // تهيئة Firebase
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                firebaseInitialized = true;
+                
+                // تحديث حالة Firebase في الإعدادات
+                updateFirebaseStatus();
+                
+                // تحميل البيانات من Firebase
+                loadFromFirebase();
+                
+                console.log("Firebase initialized successfully");
+            } catch (error) {
+                console.error("Error initializing Firebase:", error);
+                showFirebaseStatus("غير متصل بـ Firebase - البيانات محفوظة محلياً فقط", "disconnected");
+            }
+        }
+
+        // تحديث حالة Firebase في الإعدادات
+        function updateFirebaseStatus(message = null, status = null) {
+            const statusElement = document.getElementById('firebase-status');
+            
+            if (!message) {
+                message = firebaseInitialized ? 
+                    "✅ متصل بـ Firebase - البيانات متزامنة" : 
+                    "❌ غير متصل بـ Firebase - البيانات محفوظة محلياً فقط";
+            }
+            
+            if (!status) {
+                status = firebaseInitialized ? "connected" : "disconnected";
+            }
+            
+            statusElement.innerHTML = message;
+            statusElement.className = `firebase-status firebase-${status}`;
+            statusElement.style.display = 'block';
+        }
 
         // حفظ البيانات في localStorage
         function saveParts() {
             localStorage.setItem('castle-parts', JSON.stringify(parts));
-            updatePartsCount();
+            // مزامنة تلقائية مع Firebase إذا كان مهيئًا
+            if (firebaseInitialized) {
+                syncToFirebase();
+            }
         }
         
         // حفظ سلة المشتريات
         function saveCart() {
             localStorage.setItem('castle-cart', JSON.stringify(cart));
             updateCartUI();
-            updateCartCountAdmin();
+        }
+        
+        // حفظ إعدادات المتجر
+        function saveSettings() {
+            localStorage.setItem('castle-settings', JSON.stringify(storeSettings));
+            updateStoreUI();
+        }
+        
+        // تحديث واجهة المتجر بناءً على الإعدادات
+        function updateStoreUI() {
+            document.getElementById('company-logo').innerHTML = `<span>${storeSettings.companyName.split(' ')[0]}</span> ${storeSettings.companyName.split(' ').slice(1).join(' ')}`;
+            document.getElementById('contact-info').innerHTML = `
+                <div>📍 السودان - مدني</div>
+                <div>📞 ${storeSettings.phoneNumber}</div>
+            `;
+            
+            document.getElementById('footer-company-name').textContent = storeSettings.companyName;
+            document.getElementById('footer-phone').textContent = `📞 ${storeSettings.phoneNumber}`;
+            document.getElementById('footer-phone').href = `tel:${storeSettings.phoneNumber}`;
+            
+            if (storeSettings.email) {
+                document.getElementById('footer-email').style.display = 'block';
+                document.getElementById('footer-email').textContent = `✉️ ${storeSettings.email}`;
+                document.getElementById('footer-email').href = `mailto:${storeSettings.email}`;
+            } else {
+                document.getElementById('footer-email').style.display = 'none';
+            }
+            
+            WHATSAPP_NUMBER = storeSettings.whatsappNumber;
         }
 
         // تحديث واجهة سلة المشتريات
@@ -991,16 +1314,6 @@
             } else {
                 cartSection.style.display = 'none';
             }
-        }
-        
-        // تحديث عدد القطع في لوحة التحكم
-        function updatePartsCount() {
-            document.getElementById('parts-count').textContent = parts.length;
-        }
-        
-        // تحديث عدد القطع في السلة في لوحة التحكم
-        function updateCartCountAdmin() {
-            document.getElementById('cart-count-admin').textContent = cart.length;
         }
 
         // عرض رسالة للمستخدم
@@ -1036,6 +1349,27 @@
             }
         });
 
+        // رفع الصورة للتعديل
+        document.getElementById('edit-image-upload').addEventListener('click', function() {
+            document.getElementById('edit-part-image-file').click();
+        });
+
+        document.getElementById('edit-part-image-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const previewContainer = document.getElementById('edit-image-preview-container');
+                    previewContainer.innerHTML = `<img src="${event.target.result}" alt="معاينة الصورة">`;
+                    previewContainer.style.display = 'flex';
+                    
+                    // حفظ الصورة مؤقتًا للاستخدام لاحقًا
+                    previewContainer.dataset.imageData = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
         // تبديل التبويبات
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', function() {
@@ -1046,8 +1380,8 @@
                 
                 // إخفاء جميع النماذج
                 document.getElementById('search-form').style.display = 'none';
-                document.getElementById('view-all').style.display = 'none';
-                document.getElementById('categories').style.display = 'none';
+                document.getElementById('engines-parts').style.display = 'none';
+                document.getElementById('add-form').style.display = 'none';
                 
                 // إظهار النموذج المناسب
                 const tabId = this.getAttribute('data-tab');
@@ -1055,32 +1389,52 @@
                     document.getElementById('search-form').style.display = 'block';
                     document.getElementById('search-form').classList.add('fade-in');
                     document.getElementById('search-input').focus();
-                } else if (tabId === 'view') {
-                    document.getElementById('view-all').style.display = 'block';
-                    document.getElementById('view-all').classList.add('fade-in');
-                    displayAllParts();
-                } else if (tabId === 'categories') {
-                    document.getElementById('categories').style.display = 'block';
-                    document.getElementById('categories').classList.add('fade-in');
+                } else if (tabId === 'engines') {
+                    document.getElementById('engines-parts').style.display = 'block';
+                    document.getElementById('engines-parts').classList.add('fade-in');
+                    displayCategories();
+                } else if (tabId === 'add') {
+                    document.getElementById('add-form').style.display = 'block';
+                    document.getElementById('add-form').classList.add('fade-in');
+                    // إخفاء محتوى الإضافة وإظهار قسم كلمة المرور فقط
+                    document.getElementById('add-form-content').style.display = 'none';
+                    document.querySelector('.password-section').style.display = 'block';
+                    document.getElementById('password-input').value = '';
                 }
             });
         });
 
-        // فتح/إغلاق لوحة التحكم
-        document.getElementById('admin-toggle').addEventListener('click', function() {
-            document.getElementById('admin-panel').classList.toggle('open');
-        });
-
-        // التحقق من الرمز السري
+        // التحقق من الرمز السري للإضافة
         document.getElementById('password-btn').addEventListener('click', function() {
             const password = document.getElementById('password-input').value.trim();
             
             if (password === SECRET_PASSWORD) {
-                document.getElementById('admin-content').style.display = 'block';
-                document.getElementById('password-section').style.display = 'none';
-                updatePartsCount();
-                updateCartCountAdmin();
-                showMessage('تم فتح لوحة التحكم بنجاح!', 'success');
+                document.getElementById('add-form-content').style.display = 'block';
+                document.querySelector('.password-section').style.display = 'none';
+                showMessage('تم فتح قسم الإضافة بنجاح!', 'success');
+            } else {
+                showMessage('الرمز السري غير صحيح!', 'error');
+            }
+        });
+
+        // التحقق من الرمز السري للإعدادات
+        document.getElementById('settings-password-btn').addEventListener('click', function() {
+            const password = document.getElementById('settings-password').value.trim();
+            
+            if (password === SECRET_PASSWORD) {
+                document.getElementById('settings-form-content').style.display = 'block';
+                document.querySelector('.settings-dropdown .password-section').style.display = 'none';
+                
+                // تعبئة نموذج الإعدادات بالبيانات الحالية
+                document.getElementById('company-name').value = storeSettings.companyName;
+                document.getElementById('phone-number').value = storeSettings.phoneNumber;
+                document.getElementById('whatsapp-number').value = storeSettings.whatsappNumber;
+                document.getElementById('email').value = storeSettings.email;
+                
+                // تحديث حالة Firebase
+                updateFirebaseStatus();
+                
+                showMessage('تم فتح الإعدادات بنجاح!', 'success');
             } else {
                 showMessage('الرمز السري غير صحيح!', 'error');
             }
@@ -1090,7 +1444,7 @@
         document.getElementById('add-part-btn').addEventListener('click', function() {
             const name = document.getElementById('part-name').value.trim();
             const number = document.getElementById('part-number').value.trim();
-            const brand = document.getElementById('part-brand').value;
+            const category = document.getElementById('part-category').value;
             const price = document.getElementById('part-price').value.trim();
             const description = document.getElementById('part-description').value.trim();
             const imageData = document.getElementById('image-preview-container').dataset.imageData;
@@ -1105,7 +1459,7 @@
                 id: parts.length > 0 ? Math.max(...parts.map(p => p.id)) + 1 : 1,
                 name,
                 number,
-                brand,
+                category,
                 price,
                 description,
                 image: imageData || `data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZjNzU3ZCI+${encodeURIComponent(name)}PC90ZXh0Pjwvc3ZnPg==`
@@ -1119,54 +1473,6 @@
             showMessage('تم إضافة القطعة بنجاح!', 'success');
             
             // مسح الحقول
-            resetForm();
-            
-            // تحديث عرض جميع القطع
-            displayAllParts();
-        });
-
-        // تحديث قطعة غيار
-        document.getElementById('update-part-btn').addEventListener('click', function() {
-            const name = document.getElementById('part-name').value.trim();
-            const number = document.getElementById('part-number').value.trim();
-            const brand = document.getElementById('part-brand').value;
-            const price = document.getElementById('part-price').value.trim();
-            const description = document.getElementById('part-description').value.trim();
-            const imageData = document.getElementById('image-preview-container').dataset.imageData;
-            
-            if (!name || !number || !price) {
-                showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
-                return;
-            }
-            
-            // تحديث القطعة
-            const partIndex = parts.findIndex(p => p.id === editingPartId);
-            if (partIndex !== -1) {
-                parts[partIndex] = {
-                    ...parts[partIndex],
-                    name,
-                    number,
-                    brand,
-                    price,
-                    description,
-                    image: imageData || parts[partIndex].image
-                };
-                
-                saveParts();
-                showMessage('تم تحديث القطعة بنجاح!', 'success');
-                resetForm();
-                displayAllParts();
-            }
-        });
-
-        // إلغاء التعديل
-        document.getElementById('cancel-edit-btn').addEventListener('click', function() {
-            resetForm();
-            showMessage('تم إلغاء التعديل', 'success');
-        });
-
-        // مسح الحقول
-        function resetForm() {
             document.getElementById('part-name').value = '';
             document.getElementById('part-number').value = '';
             document.getElementById('part-price').value = '';
@@ -1175,15 +1481,11 @@
             document.getElementById('image-preview-container').style.display = 'none';
             document.getElementById('image-preview-container').dataset.imageData = '';
             
-            // إعادة ضبط الأزرار
-            document.getElementById('add-part-btn').style.display = 'block';
-            document.getElementById('update-part-btn').style.display = 'none';
-            document.getElementById('cancel-edit-btn').style.display = 'none';
-            
-            editingPartId = null;
-        }
+            // تحديث عرض جميع القطع
+            displayCategories();
+        });
 
-        // البحث عن قطع الغيار
+        // البحث عن قطع الغيار - إصلاح مشكلة البحث
         document.getElementById('search-btn').addEventListener('click', performSearch);
         document.getElementById('search-input').addEventListener('keyup', function(e) {
             if (e.key === 'Enter') {
@@ -1208,15 +1510,19 @@
                 return;
             }
             
-            // البحث في البيانات
-            let results = parts.filter(part => 
-                part.name.toLowerCase().includes(query) ||
-                part.number.toLowerCase().includes(query) ||
-                part.brand.toLowerCase().includes(query) ||
-                (part.description && part.description.toLowerCase().includes(query)) ||
+            // البحث في البيانات - إصلاح البحث ليشمل جميع الطرق
+            let results = parts.filter(part => {
+                const searchInName = part.name.toLowerCase().includes(query);
+                const searchInNumber = part.number.toLowerCase().includes(query);
+                const searchInCategory = part.category.toLowerCase().includes(query);
+                const searchInDescription = part.description && part.description.toLowerCase().includes(query);
+                
                 // البحث بالأربعة أرقام الأخيرة من رقم القطعة
-                (part.number.length >= 4 && part.number.slice(-4).includes(query))
-            );
+                const lastFourDigits = part.number.slice(-4);
+                const searchInLastFour = lastFourDigits.includes(query);
+                
+                return searchInName || searchInNumber || searchInCategory || searchInDescription || searchInLastFour;
+            });
             
             // عرض النتائج
             if (results.length === 0) {
@@ -1231,42 +1537,152 @@
             }
         }
 
-        // عرض جميع القطع
-        function displayAllParts() {
-            const container = document.getElementById('all-parts');
+        // عرض الفئات (المحركات فقط)
+        function displayCategories() {
+            const container = document.getElementById('categories-container');
+            container.innerHTML = '';
             
-            if (parts.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <p>لا توجد قطع غيار مضافة بعد</p>
-                        <p style="margin-top: 10px; font-size: 0.9rem; color: #999;">استخدم لوحة التحكم لإضافة قطع جديدة</p>
+            engineCategories.forEach(category => {
+                const categoryCard = document.createElement('div');
+                categoryCard.className = 'category-card fade-in';
+                categoryCard.setAttribute('data-category', category.id);
+                
+                const categoryParts = parts.filter(part => part.category === category.id);
+                
+                categoryCard.innerHTML = `
+                    <div class="category-icon">${category.icon}</div>
+                    <div class="category-name">${category.name}</div>
+                    <div class="category-count">${categoryParts.length} قطعة</div>
+                    <p style="color: #6c757d; font-size: 0.9rem; margin-top: 0.8rem;">${category.description}</p>
+                `;
+                
+                categoryCard.addEventListener('click', function() {
+                    displayCategoryParts(category.id);
+                });
+                
+                container.appendChild(categoryCard);
+            });
+        }
+
+        // عرض قطع فئة محددة - إصلاح مشكلة زر العودة
+        function displayCategoryParts(categoryId) {
+            const category = engineCategories.find(c => c.id === categoryId) || allCategories.find(c => c.id === categoryId);
+            const categoryParts = parts.filter(part => part.category === categoryId);
+            
+            const container = document.getElementById('category-parts');
+            const categoriesContainer = document.getElementById('categories-container');
+            
+            categoriesContainer.style.display = 'none';
+            container.style.display = 'grid';
+            container.innerHTML = `
+                <div style="grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="color: var(--primary-color);">${category.name} - ${categoryParts.length} قطعة</h3>
+                    <button class="back-button" id="back-to-categories">← العودة للفئات</button>
+                </div>
+            `;
+            
+            // إضافة مستمع حدث لزر العودة - إصلاح المشكلة
+            const backButton = document.getElementById('back-to-categories');
+            backButton.addEventListener('click', function() {
+                container.style.display = 'none';
+                categoriesContainer.style.display = 'grid';
+                container.innerHTML = ''; // مسح المحتوى القديم
+            });
+            
+            if (categoryParts.length === 0) {
+                container.innerHTML += `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <p>لا توجد قطع غيار في هذه الفئة بعد</p>
+                        <p style="margin-top: 10px; font-size: 0.9rem; color: #999;">انتقل إلى تبويب "إضافة قطعة غيار" لإضافة قطع جديدة</p>
                     </div>
                 `;
             } else {
-                displayParts(parts, container, true);
+                displayParts(categoryParts, container, true);
             }
         }
 
+        // فتح نموذج التعديل
+        function openEditModal(partId) {
+            const part = parts.find(p => p.id === partId);
+            if (!part) return;
+            
+            document.getElementById('edit-part-id').value = part.id;
+            document.getElementById('edit-part-name').value = part.name;
+            document.getElementById('edit-part-number').value = part.number;
+            document.getElementById('edit-part-category').value = part.category;
+            document.getElementById('edit-part-price').value = part.price;
+            document.getElementById('edit-part-description').value = part.description || '';
+            
+            const previewContainer = document.getElementById('edit-image-preview-container');
+            previewContainer.innerHTML = `<img src="${part.image}" alt="معاينة الصورة">`;
+            previewContainer.style.display = 'flex';
+            previewContainer.dataset.imageData = part.image;
+            
+            document.getElementById('edit-part-modal').style.display = 'flex';
+        }
+
+        // تحديث القطعة
+        document.getElementById('update-part-btn').addEventListener('click', function() {
+            const partId = parseInt(document.getElementById('edit-part-id').value);
+            const name = document.getElementById('edit-part-name').value.trim();
+            const number = document.getElementById('edit-part-number').value.trim();
+            const category = document.getElementById('edit-part-category').value;
+            const price = document.getElementById('edit-part-price').value.trim();
+            const description = document.getElementById('edit-part-description').value.trim();
+            const imageData = document.getElementById('edit-image-preview-container').dataset.imageData;
+            
+            if (!name || !number || !price) {
+                showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
+                return;
+            }
+            
+            // تحديث القطعة
+            const partIndex = parts.findIndex(p => p.id === partId);
+            if (partIndex !== -1) {
+                parts[partIndex] = {
+                    ...parts[partIndex],
+                    name,
+                    number,
+                    category,
+                    price,
+                    description,
+                    image: imageData || parts[partIndex].image
+                };
+                
+                saveParts();
+                displayCategories();
+                performSearch(); // تحديث نتائج البحث أيضًا
+                
+                document.getElementById('edit-part-modal').style.display = 'none';
+                showMessage('تم تحديث القطعة بنجاح!', 'success');
+            }
+        });
+
         // دالة عامة لعرض القطع
         function displayParts(partsArray, container, showBuyButton) {
-            container.innerHTML = '';
+            // إزالة أي محتوى موجود مسبقًا (باستثناء عنصر العودة للفئات إذا كان موجودًا)
+            const existingParts = container.querySelectorAll('.part-card');
+            existingParts.forEach(part => part.remove());
             
             partsArray.forEach(part => {
                 const partCard = document.createElement('div');
                 partCard.className = 'part-card fade-in';
                 
                 const isInCart = cart.some(item => item.id === part.id);
+                const category = allCategories.find(c => c.id === part.category);
                 
                 partCard.innerHTML = `
-                    <button class="delete-btn" data-id="${part.id}">🗑️</button>
-                    <button class="edit-btn" data-id="${part.id}">✏️</button>
+                    <div class="part-actions">
+                        <button class="edit-btn" data-id="${part.id}">✏️</button>
+                        <button class="delete-btn" data-id="${part.id}">🗑️</button>
+                    </div>
                     <div class="part-image">
                         <img src="${part.image}" alt="${part.name}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjE4MCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjE1MCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxOCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzZjNzU3ZCI+${encodeURIComponent(part.name)}PC90ZXh0Pjwvc3ZnPg=='">
                     </div>
                     <div class="part-info">
                         <div class="part-name">${part.name}</div>
                         <div class="part-number">${part.number}</div>
-                        <div class="part-brand">${getBrandName(part.brand)}</div>
+                        <div class="part-brand">${category ? category.name : part.category}</div>
                         <div class="part-price">${formatPrice(part.price)} ج.س</div>
                         ${part.description ? `<p style="color: #666; font-size: 0.9rem; margin-top: 0.8rem; line-height: 1.5;">${part.description}</p>` : ''}
                         ${showBuyButton ? `
@@ -1277,6 +1693,20 @@
                     </div>
                 `;
                 container.appendChild(partCard);
+            });
+            
+            // إضافة مستمعين لأزرار التعديل
+            container.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const partId = parseInt(this.getAttribute('data-id'));
+                    const password = prompt('أدخل الرمز السري للتعديل:');
+                    
+                    if (password === DELETE_PASSWORD) {
+                        openEditModal(partId);
+                    } else if (password !== null) {
+                        showMessage('الرمز السري غير صحيح!', 'error');
+                    }
+                });
             });
             
             // إضافة مستمعين لأزرار الحذف
@@ -1292,47 +1722,12 @@
                             cart = cart.filter(item => item.id !== partId);
                             saveParts();
                             saveCart();
-                            displayAllParts();
+                            displayCategories();
                             performSearch(); // تحديث نتائج البحث أيضًا
                             showMessage('تم حذف القطعة بنجاح', 'success');
                         }
                     } else if (password !== null) {
                         showMessage('الرمز السري غير صحيح!', 'error');
-                    }
-                });
-            });
-            
-            // إضافة مستمعين لأزرار التعديل
-            container.querySelectorAll('.edit-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const partId = parseInt(this.getAttribute('data-id'));
-                    const part = parts.find(p => p.id === partId);
-                    
-                    if (part) {
-                        // فتح لوحة التحكم إذا كانت مغلقة
-                        document.getElementById('admin-panel').classList.add('open');
-                        
-                        // تعبئة الحقول ببيانات القطعة
-                        document.getElementById('part-name').value = part.name;
-                        document.getElementById('part-number').value = part.number;
-                        document.getElementById('part-brand').value = part.brand;
-                        document.getElementById('part-price').value = part.price;
-                        document.getElementById('part-description').value = part.description || '';
-                        
-                        // عرض الصورة إذا كانت موجودة
-                        if (part.image) {
-                            const previewContainer = document.getElementById('image-preview-container');
-                            previewContainer.innerHTML = `<img src="${part.image}" alt="معاينة الصورة">`;
-                            previewContainer.style.display = 'flex';
-                            previewContainer.dataset.imageData = part.image;
-                        }
-                        
-                        // تغيير الأزرار لوضع التعديل
-                        document.getElementById('add-part-btn').style.display = 'none';
-                        document.getElementById('update-part-btn').style.display = 'block';
-                        document.getElementById('cancel-edit-btn').style.display = 'block';
-                        
-                        editingPartId = partId;
                     }
                 });
             });
@@ -1375,52 +1770,111 @@
             }
         }
 
-        // فتح واتساب مع تفاصيل الطلب
+        // فتح سلة المشتريات
         document.getElementById('cart-section').addEventListener('click', function() {
             if (cart.length === 0) {
                 showMessage('سلة المشتريات فارغة', 'error');
                 return;
             }
             
+            const cartItemsContainer = document.getElementById('cart-items');
+            const cartTotalContainer = document.getElementById('cart-total');
+            
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+            
+            cart.forEach((item, index) => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'order-item';
+                itemElement.innerHTML = `
+                    <div>
+                        <div>${item.name}</div>
+                        <div style="font-size: 0.9rem; color: #6c757d;">${item.number}</div>
+                    </div>
+                    <div>${formatPrice(item.price)} ج.س</div>
+                `;
+                cartItemsContainer.appendChild(itemElement);
+                
+                total += parseInt(item.price);
+            });
+            
+            cartTotalContainer.textContent = `المجموع: ${formatPrice(total)} ج.س`;
+            
+            document.getElementById('cart-modal').style.display = 'flex';
+        });
+
+        // إرسال الطلب عبر واتساب
+        document.getElementById('send-whatsapp').addEventListener('click', function() {
             let message = `مرحباً، أريد طلب قطع الغيار التالية:\n\n`;
             
             cart.forEach((item, index) => {
                 message += `${index + 1}. ${item.name} (رقم: ${item.number}) - ${formatPrice(item.price)} ج.س\n`;
             });
             
-            message += `\nالمجموع: ${formatPrice(cart.reduce((sum, item) => sum + parseInt(item.price), 0))} ج.س`;
-            message += `\n\nالاسم: _________\nالعنوان: _________\n`;
+            const total = cart.reduce((sum, item) => sum + parseInt(item.price), 0);
+            message += `\nالمجموع: ${formatPrice(total)} ج.س`;
             
             const encodedMessage = encodeURIComponent(message);
             const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
             
             window.open(whatsappURL, '_blank');
+            
+            // إغلاق النافذة المنبثقة بعد الإرسال
+            document.getElementById('cart-modal').style.display = 'none';
+            
+            // تفريغ سلة المشتريات بعد الإرسال
+            cart = [];
+            saveCart();
+            
+            showMessage('تم إرسال الطلب بنجاح!', 'success');
         });
 
-        // تصفية حسب العلامة التجارية
-        function filterByBrand(brandPrefix) {
-            // التبديل إلى تبويب عرض جميع القطع
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelector('[data-tab="view"]').classList.add('active');
+        // مزامنة البيانات إلى Firebase
+        async function syncToFirebase() {
+            if (!firebaseInitialized) return;
             
-            document.getElementById('search-form').style.display = 'none';
-            document.getElementById('categories').style.display = 'none';
-            document.getElementById('view-all').style.display = 'block';
-            document.getElementById('view-all').classList.add('fade-in');
+            try {
+                // حفظ البيانات في Firebase
+                await db.collection('store').doc('data').set({
+                    parts: parts,
+                    settings: storeSettings,
+                    lastSync: new Date().toISOString()
+                });
+                
+                console.log("Data synced to Firebase");
+            } catch (error) {
+                console.error("Error syncing to Firebase:", error);
+                showFirebaseStatus("❌ خطأ في المزامنة مع Firebase", "disconnected");
+            }
+        }
+
+        // تحميل البيانات من Firebase
+        async function loadFromFirebase() {
+            if (!firebaseInitialized) return;
             
-            // تصفية القطع حسب العلامة التجارية
-            const filteredParts = parts.filter(part => part.brand.startsWith(brandPrefix));
-            const container = document.getElementById('all-parts');
-            
-            if (filteredParts.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <p>لا توجد قطع غيار لهذه العلامة التجارية بعد</p>
-                        <p style="margin-top: 10px; font-size: 0.9rem; color: #999;">استخدم لوحة التحكم لإضافة قطع جديدة</p>
-                    </div>
-                `;
-            } else {
-                displayParts(filteredParts, container, true);
+            try {
+                const doc = await db.collection('store').doc('data').get();
+                
+                if (doc.exists) {
+                    const data = doc.data();
+                    
+                    if (data.parts && data.parts.length > 0) {
+                        parts = data.parts;
+                        saveParts();
+                        showMessage('تم تحميل البيانات من Firebase بنجاح!', 'success');
+                    }
+                    
+                    if (data.settings) {
+                        storeSettings = { ...storeSettings, ...data.settings };
+                        saveSettings();
+                    }
+                    
+                    // تحديث الواجهة
+                    displayCategories();
+                    updateStoreUI();
+                }
+            } catch (error) {
+                console.error('Error loading data from Firebase:', error);
             }
         }
 
@@ -1429,43 +1883,12 @@
             return Number(price).toLocaleString('ar-SD');
         }
 
-        // الحصول على اسم العلامة التجارية بالعربية
-        function getBrandName(brand) {
-            const brands = {
-                'howo-371': 'HOWO 371',
-                'howo-420': 'HOWO 420',
-                'howo-336': 'HOWO 336',
-                'howo-380': 'HOWO 380',
-                'howo-340': 'HOWO 340',
-                'howo-310': 'HOWO 310',
-                'weichai-wp10': 'Weichai WP10',
-                'weichai-wp12': 'Weichai WP12',
-                'weichai-wp13': 'Weichai WP13',
-                'yuchai-yc6a': 'Yuchai YC6A',
-                'yuchai-yc6l': 'Yuchai YC6L',
-                'yuchai-yc6m': 'Yuchai YC6M',
-                'cac-deutz-1013': 'CAC DEUTZ 1013',
-                'cac-deutz-2012': 'CAC DEUTZ 2012',
-                'cac-deutz-2013': 'CAC DEUTZ 2013',
-                'faw-deutz-fd68': 'FAW DEUTZ FD68',
-                'faw-deutz-fd78': 'FAW DEUTZ FD78',
-                'isuzu-4hk1': 'ISUZU 4HK1',
-                'isuzu-6hk1': 'ISUZU 6HK1',
-                'isuzu-6wg1': 'ISUZU 6WG1',
-                'shacman-wp10': 'Shacman WP10',
-                'shacman-wp12': 'Shacman WP12',
-                'foton-isf3.8': 'Foton ISF3.8',
-                'foton-isf4.5': 'Foton ISF4.5',
-                'dongfeng-dci11': 'Dongfeng dCi11',
-                'dongfeng-4h': 'Dongfeng 4H',
-                'cat': 'CAT (لودر)',
-                'str': 'STR (مكنة الشاحنة الاستاير)',
-                'deutz': 'Deutz',
-                'sinotruk': 'SINOTRUK',
-                'foton': 'FOTON',
-                'other': 'أخرى'
-            };
-            return brands[brand] || brand;
+        // إظهار حالة Firebase
+        function showFirebaseStatus(message, status) {
+            const statusElement = document.getElementById('firebase-status');
+            statusElement.innerHTML = message;
+            statusElement.className = `firebase-status firebase-${status}`;
+            statusElement.style.display = 'block';
         }
 
         // تهيئة الصفحة عند التحميل
@@ -1480,6 +1903,62 @@
             
             // تحديث واجهة سلة المشتريات
             updateCartUI();
+            
+            // تحديث واجهة المتجر
+            updateStoreUI();
+            
+            // تهيئة Firebase تلقائياً
+            initializeFirebase();
+            
+            // إظهار/إخفاء قائمة الإعدادات
+            document.querySelector('.settings-toggle').addEventListener('click', function(e) {
+                e.stopPropagation();
+                document.querySelector('.settings-dropdown').classList.toggle('active');
+                
+                // إعادة تعيين نموذج الإعدادات عند فتح القائمة
+                document.getElementById('settings-form-content').style.display = 'none';
+                document.querySelector('.settings-dropdown .password-section').style.display = 'block';
+                document.getElementById('settings-password').value = '';
+            });
+            
+            // إغلاق قائمة الإعدادات عند النقر خارجها
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.settings-dropdown') && !e.target.closest('.settings-toggle')) {
+                    document.querySelector('.settings-dropdown').classList.remove('active');
+                }
+            });
+            
+            // حفظ الإعدادات
+            document.getElementById('save-settings').addEventListener('click', function() {
+                storeSettings.companyName = document.getElementById('company-name').value.trim() || storeSettings.companyName;
+                storeSettings.phoneNumber = document.getElementById('phone-number').value.trim() || storeSettings.phoneNumber;
+                storeSettings.whatsappNumber = document.getElementById('whatsapp-number').value.trim() || storeSettings.whatsappNumber;
+                storeSettings.email = document.getElementById('email').value.trim();
+                
+                saveSettings();
+                showMessage('تم حفظ الإعدادات بنجاح!', 'success');
+                document.querySelector('.settings-dropdown').classList.remove('active');
+            });
+            
+            // إغلاق النافذة المنبثقة للتعديل
+            document.querySelector('.close-modal').addEventListener('click', function() {
+                document.getElementById('edit-part-modal').style.display = 'none';
+            });
+            
+            // إغلاق النافذة المنبثقة لسلة المشتريات
+            document.getElementById('cart-modal').querySelector('.close-modal').addEventListener('click', function() {
+                document.getElementById('cart-modal').style.display = 'none';
+            });
+            
+            // إغلاق النوافذ المنبثقة عند النقر خارجها
+            window.addEventListener('click', function(e) {
+                if (e.target === document.getElementById('edit-part-modal')) {
+                    document.getElementById('edit-part-modal').style.display = 'none';
+                }
+                if (e.target === document.getElementById('cart-modal')) {
+                    document.getElementById('cart-modal').style.display = 'none';
+                }
+            });
         });
     </script>
 </body>
