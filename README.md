@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -812,7 +811,32 @@
         .fade-in {
             animation: fadeIn 0.5s ease forwards;
         }
+        
+        /* Firebase Status */
+        .firebase-status {
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .firebase-connected {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .firebase-disconnected {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
     </style>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <header>
@@ -848,21 +872,11 @@
                                     <input type="email" id="email" placeholder="البريد الإلكتروني">
                                 </div>
                                 
-                                <div class="form-group">
-                                    <label for="github-token">رمز GitHub (للمزامنة)</label>
-                                    <input type="password" id="github-token" placeholder="أدخل رمز GitHub الشخصي">
-                                    <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem;">
-                                        للحصول على رمز GitHub: إذهب إلى Settings → Developer settings → Personal access tokens → Generate new token
-                                    </p>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="github-repo">اسم المستودع في GitHub</label>
-                                    <input type="text" id="github-repo" placeholder="اسم المستخدم/اسم المستودع">
+                                <div id="firebase-status" class="firebase-status" style="display: none;">
+                                    <!-- حالة Firebase تظهر هنا -->
                                 </div>
                                 
                                 <button type="button" class="btn btn-secondary" id="save-settings">حفظ الإعدادات</button>
-                                <button type="button" class="btn" id="sync-github" style="margin-top: 10px;">مزامنة مع GitHub</button>
                             </form>
                         </div>
                     </div>
@@ -1116,6 +1130,10 @@
     </footer>
 
     <script>
+        // تهيئة Firebase
+        let db = null;
+        let firebaseInitialized = false;
+        
         // بيانات أولية لقطع الغيار
         let parts = JSON.parse(localStorage.getItem('castle-parts')) || [
             {
@@ -1159,9 +1177,7 @@
             companyName: "القلعة الصينية للإسبيرات",
             phoneNumber: "00249969688826",
             whatsappNumber: "+249969688826",
-            email: "",
-            githubToken: "",
-            githubRepo: ""
+            email: ""
         };
         
         // رقم واتساب
@@ -1193,9 +1209,63 @@
             { id: "kits", name: "صناديق العمرات", icon: "📦", description: "صناديق عمرات المحركات" }
         ];
 
+        // تهيئة Firebase تلقائياً
+        function initializeFirebase() {
+            try {
+                // استبدل هذا التكوين بتكوين مشروع Firebase الخاص بك
+                const firebaseConfig = {
+                    apiKey: "AIzaSyC4Q8V7VcQ1X9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q9Q",
+                    authDomain: "your-project.firebaseapp.com",
+                    projectId: "your-project",
+                    storageBucket: "your-project.appspot.com",
+                    messagingSenderId: "123456789",
+                    appId: "1:123456789:web:abcdef123456"
+                };
+                
+                // تهيئة Firebase
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                firebaseInitialized = true;
+                
+                // تحديث حالة Firebase في الإعدادات
+                updateFirebaseStatus();
+                
+                // تحميل البيانات من Firebase
+                loadFromFirebase();
+                
+                console.log("Firebase initialized successfully");
+            } catch (error) {
+                console.error("Error initializing Firebase:", error);
+                showFirebaseStatus("غير متصل بـ Firebase - البيانات محفوظة محلياً فقط", "disconnected");
+            }
+        }
+
+        // تحديث حالة Firebase في الإعدادات
+        function updateFirebaseStatus(message = null, status = null) {
+            const statusElement = document.getElementById('firebase-status');
+            
+            if (!message) {
+                message = firebaseInitialized ? 
+                    "✅ متصل بـ Firebase - البيانات متزامنة" : 
+                    "❌ غير متصل بـ Firebase - البيانات محفوظة محلياً فقط";
+            }
+            
+            if (!status) {
+                status = firebaseInitialized ? "connected" : "disconnected";
+            }
+            
+            statusElement.innerHTML = message;
+            statusElement.className = `firebase-status firebase-${status}`;
+            statusElement.style.display = 'block';
+        }
+
         // حفظ البيانات في localStorage
         function saveParts() {
             localStorage.setItem('castle-parts', JSON.stringify(parts));
+            // مزامنة تلقائية مع Firebase إذا كان مهيئًا
+            if (firebaseInitialized) {
+                syncToFirebase();
+            }
         }
         
         // حفظ سلة المشتريات
@@ -1360,8 +1430,9 @@
                 document.getElementById('phone-number').value = storeSettings.phoneNumber;
                 document.getElementById('whatsapp-number').value = storeSettings.whatsappNumber;
                 document.getElementById('email').value = storeSettings.email;
-                document.getElementById('github-token').value = storeSettings.githubToken || '';
-                document.getElementById('github-repo').value = storeSettings.githubRepo || '';
+                
+                // تحديث حالة Firebase
+                updateFirebaseStatus();
                 
                 showMessage('تم فتح الإعدادات بنجاح!', 'success');
             } else {
@@ -1414,7 +1485,7 @@
             displayCategories();
         });
 
-        // البحث عن قطع الغيار
+        // البحث عن قطع الغيار - إصلاح مشكلة البحث
         document.getElementById('search-btn').addEventListener('click', performSearch);
         document.getElementById('search-input').addEventListener('keyup', function(e) {
             if (e.key === 'Enter') {
@@ -1439,15 +1510,19 @@
                 return;
             }
             
-            // البحث في البيانات
-            let results = parts.filter(part => 
-                part.name.toLowerCase().includes(query) ||
-                part.number.toLowerCase().includes(query) ||
-                part.category.toLowerCase().includes(query) ||
-                (part.description && part.description.toLowerCase().includes(query)) ||
+            // البحث في البيانات - إصلاح البحث ليشمل جميع الطرق
+            let results = parts.filter(part => {
+                const searchInName = part.name.toLowerCase().includes(query);
+                const searchInNumber = part.number.toLowerCase().includes(query);
+                const searchInCategory = part.category.toLowerCase().includes(query);
+                const searchInDescription = part.description && part.description.toLowerCase().includes(query);
+                
                 // البحث بالأربعة أرقام الأخيرة من رقم القطعة
-                (part.number.length >= 4 && part.number.slice(-4).includes(query))
-            );
+                const lastFourDigits = part.number.slice(-4);
+                const searchInLastFour = lastFourDigits.includes(query);
+                
+                return searchInName || searchInNumber || searchInCategory || searchInDescription || searchInLastFour;
+            });
             
             // عرض النتائج
             if (results.length === 0) {
@@ -1489,7 +1564,7 @@
             });
         }
 
-        // عرض قطع فئة محددة
+        // عرض قطع فئة محددة - إصلاح مشكلة زر العودة
         function displayCategoryParts(categoryId) {
             const category = engineCategories.find(c => c.id === categoryId) || allCategories.find(c => c.id === categoryId);
             const categoryParts = parts.filter(part => part.category === categoryId);
@@ -1506,11 +1581,12 @@
                 </div>
             `;
             
-            // إضافة مستمع حدث لزر العودة
+            // إضافة مستمع حدث لزر العودة - إصلاح المشكلة
             const backButton = document.getElementById('back-to-categories');
             backButton.addEventListener('click', function() {
                 container.style.display = 'none';
                 categoriesContainer.style.display = 'grid';
+                container.innerHTML = ''; // مسح المحتوى القديم
             });
             
             if (categoryParts.length === 0) {
@@ -1753,80 +1829,66 @@
             showMessage('تم إرسال الطلب بنجاح!', 'success');
         });
 
-        // مزامنة البيانات مع GitHub
-        document.getElementById('sync-github').addEventListener('click', async function() {
-            const token = storeSettings.githubToken;
-            const repo = storeSettings.githubRepo;
-            
-            if (!token || !repo) {
-                showMessage('يرجى إدخال رمز GitHub واسم المستودع', 'error');
-                return;
-            }
+        // مزامنة البيانات إلى Firebase
+        async function syncToFirebase() {
+            if (!firebaseInitialized) return;
             
             try {
-                showMessage('جاري المزامنة مع GitHub...', 'success');
-                
-                // البيانات التي نريد حفظها
-                const data = {
+                // حفظ البيانات في Firebase
+                await db.collection('store').doc('data').set({
                     parts: parts,
-                    storeSettings: storeSettings,
+                    settings: storeSettings,
                     lastSync: new Date().toISOString()
-                };
-                
-                // تحويل البيانات إلى JSON
-                const content = JSON.stringify(data, null, 2);
-                
-                // تشفير المحتوى إلى Base64
-                const encodedContent = btoa(unescape(encodeURIComponent(content)));
-                
-                // إنشاء طلب إلى GitHub API
-                const response = await fetch(`https://api.github.com/repos/${repo}/contents/data.json`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${token}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: 'تحديث بيانات قطع الغيار',
-                        content: encodedContent,
-                        sha: await getFileSHA(token, repo)
-                    })
                 });
                 
-                if (response.ok) {
-                    showMessage('تمت المزامنة بنجاح مع GitHub!', 'success');
-                } else {
-                    const errorData = await response.json();
-                    showMessage(`فشلت المزامنة: ${errorData.message}`, 'error');
-                }
+                console.log("Data synced to Firebase");
             } catch (error) {
-                showMessage(`حدث خطأ أثناء المزامنة: ${error.message}`, 'error');
+                console.error("Error syncing to Firebase:", error);
+                showFirebaseStatus("❌ خطأ في المزامنة مع Firebase", "disconnected");
             }
-        });
+        }
 
-        // الحصول على SHA للملف الموجود (للتحديث)
-        async function getFileSHA(token, repo) {
+        // تحميل البيانات من Firebase
+        async function loadFromFirebase() {
+            if (!firebaseInitialized) return;
+            
             try {
-                const response = await fetch(`https://api.github.com/repos/${repo}/contents/data.json`, {
-                    headers: {
-                        'Authorization': `token ${token}`
-                    }
-                });
+                const doc = await db.collection('store').doc('data').get();
                 
-                if (response.ok) {
-                    const data = await response.json();
-                    return data.sha;
+                if (doc.exists) {
+                    const data = doc.data();
+                    
+                    if (data.parts && data.parts.length > 0) {
+                        parts = data.parts;
+                        saveParts();
+                        showMessage('تم تحميل البيانات من Firebase بنجاح!', 'success');
+                    }
+                    
+                    if (data.settings) {
+                        storeSettings = { ...storeSettings, ...data.settings };
+                        saveSettings();
+                    }
+                    
+                    // تحديث الواجهة
+                    displayCategories();
+                    updateStoreUI();
                 }
             } catch (error) {
-                // إذا لم يوجد الملف، نرجع null
-                return null;
+                console.error('Error loading data from Firebase:', error);
             }
-            return null;
         }
 
         // تنسيق السعر
         function formatPrice(price) {
             return Number(price).toLocaleString('ar-SD');
+        }
+
+        // إظهار حالة Firebase
+        function showFirebaseStatus(message, status) {
+            const statusElement = document.getElementById('firebase-status');
+            statusElement.innerHTML = message;
+            statusElement.className = `firebase-status firebase-${status}`;
+            statusElement.style.display = 'block';
         }
 
         // تهيئة الصفحة عند التحميل
@@ -1844,6 +1906,9 @@
             
             // تحديث واجهة المتجر
             updateStoreUI();
+            
+            // تهيئة Firebase تلقائياً
+            initializeFirebase();
             
             // إظهار/إخفاء قائمة الإعدادات
             document.querySelector('.settings-toggle').addEventListener('click', function(e) {
@@ -1869,8 +1934,6 @@
                 storeSettings.phoneNumber = document.getElementById('phone-number').value.trim() || storeSettings.phoneNumber;
                 storeSettings.whatsappNumber = document.getElementById('whatsapp-number').value.trim() || storeSettings.whatsappNumber;
                 storeSettings.email = document.getElementById('email').value.trim();
-                storeSettings.githubToken = document.getElementById('github-token').value.trim();
-                storeSettings.githubRepo = document.getElementById('github-repo').value.trim();
                 
                 saveSettings();
                 showMessage('تم حفظ الإعدادات بنجاح!', 'success');
